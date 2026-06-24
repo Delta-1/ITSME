@@ -278,7 +278,7 @@
         <!-- COLUNA DIREITA: Abas de conteúdo dinâmico -->
         <div class="lg:col-span-7 space-y-6">
 
-          <!-- ABA 1: DNA (SOBRE MIM) -->
+          <!-- ABA 1: DNA (SOBRE MIM) - Escondida no mobile se selecionada outra aba -->
           <section id="tab-content-about" class="tab-pane block space-y-6 transition-all duration-300">
             <div class="glass-card p-8 rounded-2xl relative overflow-hidden border-l-4 border-accent accent-border-color">
               <div class="space-y-6">
@@ -704,20 +704,24 @@
   </main>
 
   <!-- MAC OS / FIGMA DOCK DE NAVEGAÇÃO FLUTUANTE (BOTTOM CENTER) -->
-  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl mac-dock flex items-center gap-2 max-w-[90vw] md:max-w-md">
-    <button onclick="switchTab('about')" id="btn-about" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-white bg-accent/10 accent-tab-active" title="Acessar DNA">
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl mac-dock flex items-center justify-around gap-1.5 w-[92%] max-w-sm md:max-w-md md:justify-center md:gap-2">
+    <!-- DNA Button (Escondido no Celular / Visível apenas no Desktop) -->
+    <button onclick="switchTab('about')" id="btn-about" class="hidden md:block tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-white bg-accent/10 accent-tab-active" title="Acessar DNA">
       DNA
     </button>
-    <div class="h-4 w-[1px] bg-white/10"></div>
-    <button onclick="switchTab('work')" id="btn-work" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white" title="Projetos">
+    <div class="hidden md:block h-4 w-[1px] bg-white/10"></div>
+    
+    <button onclick="switchTab('work')" id="btn-work" class="tab-btn dock-item px-3 py-2 md:px-4 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white flex-1 md:flex-initial text-center" title="Projetos">
       PROJETOS
     </button>
     <div class="h-4 w-[1px] bg-white/10"></div>
-    <button onclick="switchTab('skills')" id="btn-skills" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white" title="Habilidades">
+    
+    <button onclick="switchTab('skills')" id="btn-skills" class="tab-btn dock-item px-3 py-2 md:px-4 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white flex-1 md:flex-initial text-center" title="Habilidades">
       SKILLS
     </button>
     <div class="h-4 w-[1px] bg-white/10"></div>
-    <button onclick="switchTab('contact')" id="btn-contact" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white" title="Contato">
+    
+    <button onclick="switchTab('contact')" id="btn-contact" class="tab-btn dock-item px-3 py-2 md:px-4 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white flex-1 md:flex-initial text-center" title="Contato">
       CONTATO
     </button>
   </div>
@@ -849,9 +853,16 @@
       }
     }
 
-    // Inicialização padrão com o Ciano do Victor
+    // Inicialização padrão com o Ciano ou Verde dependendo do dispositivo
     window.onload = function() {
-      setThemeColor('#06b6d4');
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        // Celular inicia direto nos Projetos (Verde Limão)
+        switchTab('work');
+      } else {
+        // Desktop inicia no DNA (Ciano)
+        switchTab('about');
+      }
     };
 
     // Alternância rápida de Abas e Cores Automáticas por Seção (Estilo Figma/Mac)
