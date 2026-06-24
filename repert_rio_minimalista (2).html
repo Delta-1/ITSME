@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DELTS | Portfolio</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts para Tipografia Editorial e Moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Syne"', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          },
+          animation: {
+            'spin-slow': 'spin 15s linear infinite',
+            'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          colors: {
+            accent: {
+              DEFAULT: '#06b6d4', 
+              glow: 'rgba(6, 182, 212, 0.15)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Ocultar cursor nativo do mouse em dispositivos com ponteiro */
+    @media (pointer: fine) {
+      body, a, button, input, textarea, select, [role="button"] {
+        cursor: none !important;
+      }
+    }
+
+    /* CONTAINER DO CURSOR: Posição direta sem lag */
+    .custom-cursor-container {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-50%, -50%, 0);
+      display: none;
+      will-change: transform;
+    }
+    
+    @media (pointer: fine) {
+      .custom-cursor-container {
+        display: block;
+      }
+    }
+
+    /* ELEMENTO VISUAL DO CURSOR */
+    .custom-cursor-visual {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+    }
+
+    /* Linhas diagonais do X */
+    .custom-cursor-visual::before,
+    .custom-cursor-visual::after {
+      content: '';
+      position: absolute;
+      background-color: var(--accent-color, #06b6d4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Linha diagonal 1 */
+    .custom-cursor-visual::before {
+      top: 0;
+      left: 11px;
+      width: 2px;
+      height: 24px;
+      transform: rotate(45deg);
+    }
+
+    /* Linha diagonal 2 */
+    .custom-cursor-visual::after {
+      top: 11px;
+      left: 0;
+      width: 24px;
+      height: 2px;
+      transform: rotate(45deg);
+    }
+
+    /* Efeito de hover nos elementos clicáveis: cresce e gira mais 90 graus */
+    body.hovering-clickable .custom-cursor-visual {
+      transform: scale(1.6) rotate(135deg);
+    }
+    
+    body.hovering-clickable .custom-cursor-visual::before,
+    body.hovering-clickable .custom-cursor-visual::after {
+      background-color: #ffffff;
+      box-shadow: 0 0 8px var(--accent-color, #06b6d4);
+    }
+
+    /* Efeito de clique */
+    body.clicking .custom-cursor-visual {
+      transform: scale(0.8) rotate(45deg);
+    }
+
+    /* Scrollbar minimalista */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d0e11;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-color, #06b6d4);
+    }
+
+    /* Textura de ruído */
+    .bg-grain {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+    }
+
+    /* Glassmorphism */
+    .glass-card {
+      background: rgba(18, 18, 22, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Dock estilo Mac/Figma na parte inferior */
+    .mac-dock {
+      background: rgba(10, 11, 15, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .mac-dock:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.15);
+    }
+
+    .dock-item {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .dock-item:hover {
+      transform: translateY(-8px) scale(1.1);
+    }
+  </style>
+</head>
+<body class="bg-[#090a0f] text-gray-100 font-sans selection:bg-accent selection:text-black overflow-x-hidden bg-grain relative pb-32">
+
+  <!-- Custom Cursor Container (Zero Delay) -->
+  <div id="cursor-container" class="custom-cursor-container">
+    <div id="cursor-visual" class="custom-cursor-visual"></div>
+  </div>
+
+  <!-- Ambient Glow Elements -->
+  <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-accent-glow rounded-full blur-[150px] pointer-events-none opacity-40 transition-colors duration-500" id="ambient-glow-1"></div>
+  <div class="absolute bottom-[20%] right-[-10%] w-[40vw] h-[40vw] bg-accent-glow rounded-full blur-[130px] pointer-events-none opacity-30 transition-colors duration-500" id="ambient-glow-2"></div>
+
+  <!-- Top Header -->
+  <header class="w-full fixed top-0 z-40 glass-card border-b border-white/5 px-6 py-4 md:px-12 flex justify-between items-center transition-all duration-300">
+    <div class="flex items-center gap-3">
+      <span class="font-display text-xl tracking-widest text-white flex items-center gap-2 select-none">
+        DELTS
+      </span>
+    </div>
+
+    <!-- Indicador de Status minimalista -->
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-accent animate-pulse-subtle accent-bg-color"></span>
+      <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase select-none">// DISPONÍVEL AGORA</span>
+    </div>
+  </header>
+
+  <main class="min-h-screen pt-28 pb-12 px-4 md:px-12 flex items-center justify-center">
+    <div class="w-full max-w-7xl mx-auto">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- COLUNA ESQUERDA: Informações Fixas / Hero Base -->
+        <div class="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-28">
+          
+          <div class="space-y-1">
+            <h1 id="brand-name" class="font-display text-5xl md:text-6xl xl:text-7xl uppercase tracking-tighter leading-none text-white select-none transition-all duration-500">
+              VICTOR H.<br>SOUZA
+            </h1>
+            <div class="flex items-center gap-3">
+              <p class="text-xs font-mono tracking-widest text-gray-400 uppercase">
+                DESENVOLVEDOR WEB, DESIGNER & ADM
+              </p>
+              <div class="h-px flex-grow bg-white/10"></div>
+            </div>
+          </div>
+
+          <!-- Hero Graphic: Foto do Victor com Texto Girando em Círculo (Inspirado no image_cca6a3.png) -->
+          <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden glass-card p-6 flex items-end justify-between group">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10"></div>
+            
+            <!-- Desenho Conceitual do Artista / Portrait Placeholder no Centro (Foco em design de vetores) -->
+            <div class="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#111217]">
+              <svg class="w-4/5 h-4/5 text-white/5 group-hover:text-white/10 transition-colors duration-500" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                <circle cx="50" cy="50" r="40" stroke-width="0.5" stroke-dasharray="2 2" />
+                <polygon points="50,20 75,70 25,70" stroke-width="0.75" />
+                <path d="M 50,50 L 50,20 M 50,50 L 75,70 M 50,50 L 25,70" stroke-width="0.5" />
+                <circle cx="50" cy="50" r="4" fill="currentColor" />
+              </svg>
+              <span class="absolute bottom-6 font-mono text-[9px] text-white/40 tracking-[0.4em] uppercase">DELTS DEVELOPMENT</span>
+            </div>
+
+            <!-- Badge Giratório de Texto Circular (Alinhado exatamente à imagem image_cca6a3.png) -->
+            <div class="absolute top-6 right-6 z-20">
+              <div class="relative w-28 h-28 flex items-center justify-center">
+                <svg class="absolute w-full h-full animate-spin-slow" viewBox="0 0 100 100">
+                  <path id="circlePath" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="none" />
+                  <text class="text-[7px] font-mono fill-white tracking-[0.16em] uppercase">
+                    <textPath href="#circlePath">
+                      • VICTOR H. SOUZA • INNOVATION • TECHNOLOGY • DESIGN • EDUCATION
+                    </textPath>
+                  </text>
+                </svg>
+                <div class="w-3 h-3 rounded-full bg-accent glow-dot accent-bg-color"></div>
+              </div>
+            </div>
+
+            <!-- Seta decorativa removida para máxima fidelidade conceitual e limpeza visual -->
+
+            <div class="z-20">
+              <span class="text-[10px] font-mono px-2 py-1 rounded bg-accent/20 text-accent font-semibold uppercase accent-text-color accent-bg-color-10">
+                Inovando Sempre
+              </span>
+              <p class="text-xs text-gray-400 mt-2 font-mono">// Remoto (Disponível Globalmente)</p>
+            </div>
+          </div>
+
+          <!-- Redes Sociais do Victor (Altamente Visíveis e Estilizadas com Ícones) -->
+          <div class="glass-card p-4 rounded-xl flex flex-col gap-3">
+            <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest">// CONECTAR AGORA</span>
+            <div class="grid grid-cols-2 gap-3">
+              <a href="https://github.com/Delta-1" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-300">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.193 22 16.44 22 12.017 22 6.484 17.522 2 12 2z"/>
+                </svg>
+                <span class="font-mono text-xs">GITHUB</span>
+              </a>
+              <a href="https://www.instagram.com/v_ctorsz/" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                <span class="font-mono text-xs">INSTAGRAM</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA: Abas de conteúdo dinâmico -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- ABA 1: DNA (SOBRE MIM) -->
+          <section id="tab-content-about" class="tab-pane block space-y-6 transition-all duration-300">
+            <div class="glass-card p-8 rounded-2xl relative overflow-hidden border-l-4 border-accent accent-border-color">
+              <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                  <h2 class="font-display text-2xl uppercase tracking-tight text-white flex items-center gap-2">
+                    CREATIVE DNA
+                  </h2>
+                  <span class="font-mono text-xs text-accent accent-text-color font-semibold uppercase tracking-wider">[ Core Profile ]</span>
+                </div>
+
+                <!-- Estatísticas Reais do Victor -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-white/5">
+                  <div class="space-y-1">
+                    <p class="text-3xl font-display font-bold text-accent accent-text-color">6+</p>
+                    <p class="text-xs text-gray-400 font-mono uppercase tracking-wider">Projetos Ativos</p>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-3xl font-display font-bold text-accent accent-text-color">4</p>
+                    <p class="text-xs text-gray-400 font-mono uppercase tracking-wider">Áreas de Atuação</p>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-3xl font-display font-bold text-white flex items-center gap-2">
+                      100% <span class="text-accent accent-text-color">Inovador</span>
+                    </p>
+                    <p class="text-xs text-gray-400 font-mono uppercase tracking-wider">Estratégia & Tecnologia</p>
+                  </div>
+                </div>
+
+                <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light">
+                  Sou um desenvolvedor e criador de soluções digitais com formação em <span class="text-white font-medium">Tecnologia da Informação</span>, <span class="text-white font-medium">Administração</span> e experiência acadêmica em <span class="text-white font-medium">Química</span>, atualmente cursando <span class="text-white font-medium">Medicina</span>. Minha trajetória é marcada pela busca constante por inovação, unindo tecnologia, design e estratégia para desenvolver ferramentas que simplificam processos e ampliam o acesso ao conhecimento. Acredito que a tecnologia deve ser utilizada para potencializar pessoas e transformar ideias em soluções reais.
+                </p>
+
+                <!-- Histórico e Áreas de Atuação -->
+                <div class="pt-2 space-y-4">
+                  <h3 class="text-xs font-mono uppercase tracking-widest text-gray-400">// MULTIDISCIPLINARIDADE</h3>
+                  <div class="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                      <p class="text-sm font-semibold text-white">Desenvolvedor Web & Aplicações | Designer Digital | Técnico em ADM</p>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-gray-400 w-fit">Ativo</span>
+                    </div>
+                    <p class="text-xs text-gray-400">Atuação que integra medicina, química acadêmica, gestão de negócios e desenvolvimento de sistemas sob inteligência artificial.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Citação do Jensen Huang -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass-card p-6 rounded-xl flex flex-col justify-between h-44">
+                <span class="font-mono text-[10px] text-gray-500">// FILOSOFIA DE IA</span>
+                <p class="text-xs font-light text-gray-300 italic">"A inteligência artificial não vai te tirar o emprego, mas alguém que saiba usá-la pode."</p>
+                <span class="text-[10px] font-mono text-accent accent-text-color mt-1">— Jensen Huang</span>
+                <div class="w-full h-1 bg-gradient-to-r from-accent to-transparent accent-gradient-from mt-2"></div>
+              </div>
+              <div class="glass-card p-6 rounded-xl flex flex-col justify-between h-44">
+                <span class="font-mono text-[10px] text-gray-500">// DESIGN & EFICIÊNCIA</span>
+                <p class="text-xs font-light text-gray-300">Minha visão une a sensibilidade humanizada da área de saúde à precisão técnica e estruturada do desenvolvimento de softwares.</p>
+                <div class="w-full h-1 bg-gradient-to-r from-white/20 to-transparent"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ABA 2: PROJETOS AUTORAIS -->
+          <section id="tab-content-work" class="tab-pane hidden space-y-6 transition-all duration-300">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <h2 class="font-display text-2xl uppercase text-white">PROJETOS AUTORAIS</h2>
+              <div class="flex flex-wrap gap-1.5" id="portfolio-filters">
+                <button onclick="filterPortfolio('all')" class="port-filter-btn px-3 py-1 rounded bg-accent text-black font-semibold text-xs uppercase accent-bg-color accent-active-filter" data-filter="all">Tudo</button>
+                <button onclick="filterPortfolio('ai')" class="port-filter-btn px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs uppercase" data-filter="ai">IA</button>
+                <button onclick="filterPortfolio('edu')" class="port-filter-btn px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs uppercase" data-filter="edu">Educação/Saúde</button>
+                <button onclick="filterPortfolio('util')" class="port-filter-btn px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs uppercase" data-filter="util">Utilitários</button>
+              </div>
+            </div>
+
+            <!-- Grid de Projetos do Victor -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="portfolio-grid">
+              
+              <!-- Projeto 1: PIPU -->
+              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="ai">
+                <div>
+                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
+                      <svg class="w-16 h-16 text-accent/30 group-hover:text-accent/60 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="10" r="2" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Inteligência Artificial</span>
+                  </div>
+                  <div class="p-5 space-y-2">
+                    <div class="flex justify-between items-center">
+                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">PIPU</h3>
+                      <span class="text-[10px] font-mono text-gray-500">2026</span>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light">Companheira virtual desenvolvida com foco em interação humana e conversação inteligente.</p>
+                  </div>
+                </div>
+                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
+                  <button onclick="openProjectModal('PIPU', 'Inteligência Artificial', 'PIPU é uma companheira virtual focada em criar interações humanas ricas e assistências personalizadas. Trata-se de uma inteligência com alto poder de conversação natural que fornece respostas inteligentes em tempo de resposta otimizado.', 'Relacionamento Digital Interativo', 'https://delta-1.github.io/PIPU-MODEL/')" class="text-xs text-accent font-semibold hover:underline">
+                    Detalhes →
+                  </button>
+                  <a href="https://delta-1.github.io/PIPU-MODEL/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
+                    Acessar App ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- Projeto 2: MONOFY -->
+              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="ai">
+                <div>
+                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
+                      <svg class="w-16 h-16 text-white/20 group-hover:text-white/40 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                      </svg>
+                    </div>
+                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">EdTech & IA</span>
+                  </div>
+                  <div class="p-5 space-y-2">
+                    <div class="flex justify-between items-center">
+                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">MONOFY</h3>
+                      <span class="text-[10px] font-mono text-gray-500">2026</span>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light">Plataforma inteligente para automação de monografias e trabalhos acadêmicos de alta complexidade.</p>
+                  </div>
+                </div>
+                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
+                  <button onclick="openProjectModal('MONOFY', 'Educação e Inteligência Artificial', 'O MONOFY é uma plataforma web e mobile desenvolvida para simplificar a rotina de produção de trabalhos acadêmicos, monografias e artigos científicos com auxílio refinado de Inteligência Artificial.', 'Automatização e Simplificação de Pesquisa', 'https://delta-1.github.io/MONOFY/')" class="text-xs text-accent font-semibold hover:underline">
+                    Detalhes →
+                  </button>
+                  <a href="https://delta-1.github.io/MONOFY/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
+                    Acessar App ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- Projeto 3: BIBLIONMED -->
+              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="edu">
+                <div>
+                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
+                      <svg class="w-16 h-16 text-accent/30 group-hover:text-accent/60 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                      </svg>
+                    </div>
+                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Educação & Saúde</span>
+                  </div>
+                  <div class="p-5 space-y-2">
+                    <div class="flex justify-between items-center">
+                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">BIBLIONMED</h3>
+                      <span class="text-[10px] font-mono text-gray-500">2026</span>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light">Plataforma de acesso gratuito e unificado a acervos e livros-texto da área médica.</p>
+                  </div>
+                </div>
+                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
+                  <button onclick="openProjectModal('BIBLIONMED', 'Educação e Saúde', 'BIBLIONMED nasceu do entendimento de Victor sobre as barreiras de acesso aos caros materiais de medicina. Uma plataforma rápida e otimizada que promove a democratização literária da saúde.', 'Acesso Gratuito e Descentralizado', 'https://delta-1.github.io/Biblionmed/')" class="text-xs text-accent font-semibold hover:underline">
+                    Detalhes →
+                  </button>
+                  <a href="https://delta-1.github.io/Biblionmed/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
+                    Acessar App ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- Projeto 4: CURRICULY -->
+              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="util">
+                <div>
+                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
+                      <svg class="w-16 h-16 text-white/20 group-hover:text-white/40 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                      </svg>
+                    </div>
+                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Produtividade</span>
+                  </div>
+                  <div class="p-5 space-y-2">
+                    <div class="flex justify-between items-center">
+                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">CURRICULY</h3>
+                      <span class="text-[10px] font-mono text-gray-500">2026</span>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light">Sistema dinâmico e inteligente para criação de currículos profissionais de alto impacto.</p>
+                  </div>
+                </div>
+                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
+                  <button onclick="openProjectModal('CURRICULY', 'Produtividade e RH', 'Desenvolvemos o CURRICULY para resolver a complicação de formatação estrutural e de layout em seleções corporativas. O algoritmo gera uma folha esteticamente perfeita com poucos campos.', 'Elaboração Curricular Veloz e Otimizada', 'https://delta-1.github.io/Curriculy/')" class="text-xs text-accent font-semibold hover:underline">
+                    Detalhes →
+                  </button>
+                  <a href="https://delta-1.github.io/Curriculy/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
+                    Acessar App ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- Projeto 5: VITRINE WEB -->
+              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="util">
+                <div>
+                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
+                      <svg class="w-16 h-16 text-accent/30 group-hover:text-accent/60 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                      </svg>
+                    </div>
+                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Comunicação</span>
+                  </div>
+                  <div class="p-5 space-y-2">
+                    <div class="flex justify-between items-center">
+                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">VITRINE WEB</h3>
+                      <span class="text-[10px] font-mono text-gray-500">2026</span>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light">Exibidor de mídias e apresentações totalmente online, intuitivo e sem custos.</p>
+                  </div>
+                </div>
+                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
+                  <button onclick="openProjectModal('VITRINE WEB', 'Comunicação Digital', 'O Vitrine Web opera como um ecossistema gratuito e focado na facilidade de apresentações, integrando arquivos de mídia diretamente no navegador sem travamentos.', 'Solução Descomplicada de Exposição', 'https://delta-1.github.io/VITRINE.WEB.PLAYER/')" class="text-xs text-accent font-semibold hover:underline">
+                    Detalhes →
+                  </button>
+                  <a href="https://delta-1.github.io/VITRINE.WEB.PLAYER/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
+                    Acessar App ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- Projeto 6: GESTORFISCALPRO -->
+              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="util">
+                <div>
+                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
+                      <svg class="w-16 h-16 text-white/20 group-hover:text-white/40 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="4" y="4" width="16" height="16" rx="2"/>
+                        <line x1="9" y1="9" x2="15" y2="9"/>
+                        <line x1="9" y1="13" x2="15" y2="13"/>
+                        <line x1="12" y1="9" x2="12" y2="15"/>
+                      </svg>
+                    </div>
+                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-accent accent-text-color font-semibold">Em Progresso</span>
+                  </div>
+                  <div class="p-5 space-y-2">
+                    <div class="flex justify-between items-center">
+                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">GESTORFISCALPRO</h3>
+                      <span class="text-[10px] font-mono text-gray-500">Dev</span>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light">Automação de cálculos complexos de impostos e apoio gerencial tributário de alta fidelidade.</p>
+                  </div>
+                </div>
+                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
+                  <button onclick="openProjectModal('GESTORFISCALPRO', 'Gestão Tributária', 'Unindo o conhecimento de Administração ao desenvolvimento de software, este app visa facilitar a vida do pequeno e médio empreendedor brasileiro, automatizando o cálculo de impostos.', 'Foco em Automação Tributária', '#')" class="text-xs text-accent font-semibold hover:underline">
+                    Detalhes →
+                  </button>
+                  <span class="px-3 py-1.5 rounded bg-white/5 text-gray-500 font-mono text-[10px] select-none cursor-not-allowed">
+                    Em Breve ⌛
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ABA 3: HABILIDADES & TOOLKIT -->
+          <section id="tab-content-skills" class="tab-pane hidden space-y-6 transition-all duration-300">
+            <div class="glass-card p-8 rounded-2xl space-y-6">
+              <div class="flex justify-between items-center">
+                <h2 class="font-display text-2xl uppercase text-white">HABILIDADES & TOOLKIT</h2>
+                <span class="font-mono text-xs text-accent accent-text-color font-semibold">[ Perfil Técnico ]</span>
+              </div>
+
+              <p class="text-gray-400 text-sm leading-relaxed font-light">
+                Com uma mente analítica refinada que transita entre lógica de programação, estratégias administrativas, e rigor científico conceitual.
+              </p>
+
+              <!-- Barras de Progresso e Habilidades -->
+              <div class="space-y-4">
+                
+                <!-- Skill 1 -->
+                <div class="space-y-1.5">
+                  <div class="flex justify-between text-xs font-mono">
+                    <span class="text-white">DESENVOLVIMENTO WEB E APLICAÇÕES</span>
+                    <span class="text-accent accent-text-color">95%</span>
+                  </div>
+                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 95%"></div>
+                  </div>
+                </div>
+
+                <!-- Skill 2 -->
+                <div class="space-y-1.5">
+                  <div class="flex justify-between text-xs font-mono">
+                    <span class="text-white">INTELIGÊNCIA ARTIFICIAL E AUTOMAÇÃO</span>
+                    <span class="text-accent accent-text-color">90%</span>
+                  </div>
+                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 90%"></div>
+                  </div>
+                </div>
+
+                <!-- Skill 3 -->
+                <div class="space-y-1.5">
+                  <div class="flex justify-between text-xs font-mono">
+                    <span class="text-white">DESIGN DE INTERFACES E IDENTIDADE VISUAL</span>
+                    <span class="text-accent accent-text-color">85%</span>
+                  </div>
+                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 85%"></div>
+                  </div>
+                </div>
+
+                <!-- Skill 4 -->
+                <div class="space-y-1.5">
+                  <div class="flex justify-between text-xs font-mono">
+                    <span class="text-white">GESTÃO ADMINISTRATIVA E PLANEJAMENTO</span>
+                    <span class="text-accent accent-text-color">80%</span>
+                  </div>
+                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 80%"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Lista completa de Tags Adicionais -->
+              <div class="pt-4 border-t border-white/5 space-y-3">
+                <span class="text-xs font-mono uppercase text-gray-500">// ARSENAL COMPLEMENTAR</span>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Python</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Low-Code</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">No-Code</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">UI/UX</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">APIs</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Automação</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Branding</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Desenvolvimento Mobile</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Banco de Dados</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Marketing Digital</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Pesquisa Científica</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Tecnologia Educacional</span>
+                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Product Design</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ABA 4: CONTATO -->
+          <section id="tab-content-contact" class="tab-pane hidden space-y-6 transition-all duration-300">
+            <div class="glass-card p-8 rounded-2xl space-y-6">
+              <div class="space-y-2">
+                <h2 class="font-display text-2xl uppercase text-white">VAMOS INICIAR UMA SOLUÇÃO?</h2>
+                <p class="text-gray-400 text-sm font-light leading-relaxed">
+                  Interessado em desenvolver automações, sistemas de inteligência artificial ou consultoria tecnológica? Preencha os detalhes abaixo para abrirmos uma transmissão instantânea no meu WhatsApp.
+                </p>
+              </div>
+
+              <!-- Formulário conectado direto com o WhatsApp do Victor -->
+              <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label for="form-name" class="text-xs font-mono text-gray-400 uppercase">Seu Nome *</label>
+                    <input type="text" id="form-name" required class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent transition-colors accent-focus-border">
+                  </div>
+                  <div class="space-y-1">
+                    <label for="form-email" class="text-xs font-mono text-gray-400 uppercase">Seu E-mail *</label>
+                    <input type="email" id="form-email" required class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent transition-colors accent-focus-border">
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label for="form-objective" class="text-xs font-mono text-gray-400 uppercase">Escopo do Projeto</label>
+                  <select id="form-objective" class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-accent transition-colors accent-focus-border">
+                    <option value="Automação ou Inteligência Artificial" class="bg-[#090a0f]">Automação ou Inteligência Artificial</option>
+                    <option value="Desenvolvimento Web ou Mobile" class="bg-[#090a0f]">Desenvolvimento Web ou Mobile</option>
+                    <option value="Branding e Interface Design" class="bg-[#090a0f]">Branding & Interface Design</option>
+                    <option value="Gestão e Consultoria de Projetos" class="bg-[#090a0f]">Gestão e Consultoria de Projetos</option>
+                  </select>
+                </div>
+
+                <div class="space-y-1">
+                  <label for="form-message" class="text-xs font-mono text-gray-400 uppercase">Breve resumo da ideia</label>
+                  <textarea id="form-message" rows="4" required class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent transition-colors accent-focus-border" placeholder="Conte-me sobre o que deseja arquitetar..."></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-lg bg-accent text-black font-semibold uppercase text-xs tracking-wider hover:brightness-110 active:scale-[0.99] transition-all duration-200 accent-bg-color">
+                  Enviar Mensagem para o meu WhatsApp
+                </button>
+              </form>
+
+              <div id="form-success-box" class="hidden bg-accent/10 border border-accent/20 rounded-xl p-6 text-center space-y-3 transition-all duration-300 accent-bg-color-10 accent-border-color-20">
+                <svg class="w-12 h-12 text-accent mx-auto accent-text-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <h3 class="font-display text-lg text-white uppercase">CONEXÃO CONCLUÍDA</h3>
+                <p class="text-xs text-gray-400 max-w-md mx-auto">Sua transmissão do WhatsApp foi iniciada! Caso a página não tenha aberto automaticamente, clique abaixo para abrir.</p>
+                <div class="flex flex-col gap-2 justify-center items-center">
+                  <a id="whatsapp-direct-link" href="#" target="_blank" class="px-4 py-2 rounded-lg bg-accent text-black font-bold text-xs uppercase accent-bg-color">Iniciar Chat Manualmente ↗</a>
+                  <button onclick="resetContactForm()" class="text-xs text-white underline hover:text-accent font-mono tracking-wider transition-colors accent-hover-text-color">Enviar outra mensagem</button>
+                </div>
+              </div>
+
+              <!-- Informação de Contato -->
+              <div class="pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between text-xs font-mono text-gray-500 gap-4">
+                <div>
+                  <span class="text-gray-400 font-bold block">// CANAL DIRETO</span>
+                  <span>Disponível via Formulário WhatsApp</span>
+                </div>
+                <div>
+                  <span class="text-gray-400 font-bold block">// AMBIENTE DIGITAL</span>
+                  <span>Victor H. Souza @ Delta-1</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MAC OS / FIGMA DOCK DE NAVEGAÇÃO FLUTUANTE (BOTTOM CENTER) -->
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl mac-dock flex items-center gap-2 max-w-[90vw] md:max-w-md">
+    <button onclick="switchTab('about')" id="btn-about" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-white bg-accent/10 accent-tab-active" title="Acessar DNA">
+      DNA
+    </button>
+    <div class="h-4 w-[1px] bg-white/10"></div>
+    <button onclick="switchTab('work')" id="btn-work" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white" title="Projetos">
+      PROJETOS
+    </button>
+    <div class="h-4 w-[1px] bg-white/10"></div>
+    <button onclick="switchTab('skills')" id="btn-skills" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white" title="Habilidades">
+      SKILLS
+    </button>
+    <div class="h-4 w-[1px] bg-white/10"></div>
+    <button onclick="switchTab('contact')" id="btn-contact" class="tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white" title="Contato">
+      CONTATO
+    </button>
+  </div>
+
+  <!-- MODAL DE DETALHES DO PROJETO -->
+  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-filter backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-card max-w-2xl w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl scale-95 transition-transform duration-300" id="project-modal-content">
+      
+      <div class="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+        <div>
+          <span id="modal-category" class="font-mono text-[10px] uppercase text-accent accent-text-color tracking-widest">[ Direção ]</span>
+          <h3 id="modal-title" class="font-display text-2xl text-white uppercase mt-1">PROJETO</h3>
+        </div>
+        <button onclick="closeProjectModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center transition-all duration-200" title="Fechar">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <!-- Frame com o fallback do projeto aberto em tamanho maior -->
+        <div class="h-56 bg-black/40 rounded-xl flex items-center justify-center border border-white/5 relative overflow-hidden group">
+          <div id="modal-project-svg-fallback" class="absolute inset-0 bg-gradient-to-tr from-accent-glow to-transparent opacity-50"></div>
+          <svg id="modal-project-icon-fallback" class="w-12 h-12 text-accent/20 animate-pulse accent-text-color-20 relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+          <span class="absolute bottom-3 right-3 font-mono text-[9px] text-gray-500">// Vetores Ativos</span>
+        </div>
+
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-[10px] font-mono text-gray-500 uppercase block">// Resumo do Desenvolvimento</span>
+            <p id="modal-description" class="text-sm text-gray-300 leading-relaxed font-light">
+              Detalhamento técnico do projeto do Victor H. Souza.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+            <div>
+              <span class="text-[10px] font-mono text-gray-500 uppercase block">// Métrica ou Objetivo</span>
+              <p id="modal-metric" class="text-xs text-white font-semibold mt-1">Status Ativo</p>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-gray-500 uppercase block">// Tecnologia</span>
+              <p class="text-xs text-white font-semibold mt-1">Modern JS, IA & APIs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 border-t border-white/5 bg-black/20 flex justify-end gap-3">
+        <button onclick="closeProjectModal()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-white transition-colors duration-200">
+          FECHAR JANELA
+        </button>
+        <a id="modal-action-btn" href="#" target="_blank" class="px-4 py-2 rounded-lg bg-accent text-black font-semibold text-xs uppercase tracking-wider transition-all duration-200 accent-bg-color hover:brightness-110 flex items-center gap-1">
+          ACESSAR APLICAÇÃO ↗
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Configurações do Cursor Customizado em X - COMPLETAMENTE LOCKADO (ZERO DELAY)
+    const cursorContainer = document.getElementById('cursor-container');
+
+    // Movimentação direta sem cálculo de interpolação/easing no translate3d
+    document.addEventListener('mousemove', (e) => {
+      cursorContainer.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    });
+
+    // Eventos de estado do cursor para hover nos elementos clicáveis
+    const updateClickableListeners = () => {
+      const clickables = document.querySelectorAll('a, button, select, input, textarea, [role="button"]');
+      clickables.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          document.body.classList.add('hovering-clickable');
+        });
+        el.addEventListener('mouseleave', () => {
+          document.body.classList.remove('hovering-clickable');
+        });
+      });
+    };
+
+    document.addEventListener('mousedown', () => document.body.classList.add('clicking'));
+    document.addEventListener('mouseup', () => document.body.classList.remove('clicking'));
+    updateClickableListeners();
+
+    // Estado Geral do Modo de Cores
+    let activeTabId = 'about';
+
+    // Cores específicas de cada aba para o modo padrão
+    const tabColors = {
+      about: '#06b6d4',   // DNA -> Cyan Tech
+      work: '#84cc16',    // Projetos -> Lime Neon
+      skills: '#ec4899',  // Habilidades -> Pink Cyber
+      contact: '#f59e0b'  // Contato -> Gold Amber
+    };
+
+    // Altera cores de destaque dinamicamente
+    function setThemeColor(hexColor) {
+      document.documentElement.style.setProperty('--accent-color', hexColor);
+      
+      const activeTabs = document.querySelectorAll('.accent-tab-active');
+      activeTabs.forEach(el => {
+        el.style.backgroundColor = hexColor + '1A';
+        el.style.color = hexColor;
+      });
+
+      const dotColor = document.querySelector('.accent-dot-color');
+      if (dotColor) dotColor.style.backgroundColor = hexColor;
+
+      const bgDots = document.querySelectorAll('.accent-bg-color');
+      bgDots.forEach(el => el.style.backgroundColor = hexColor);
+
+      const textColors = document.querySelectorAll('.accent-text-color');
+      textColors.forEach(el => el.style.color = hexColor);
+
+      const borderColors = document.querySelectorAll('.accent-border-color');
+      borderColors.forEach(el => el.style.borderColor = hexColor);
+
+      const glow1 = document.getElementById('ambient-glow-1');
+      const glow2 = document.getElementById('ambient-glow-2');
+      if (glow1) glow1.style.backgroundColor = hexColor + '26';
+      if (glow2) glow2.style.backgroundColor = hexColor + '1A';
+
+      const filterActive = document.querySelector('.accent-active-filter');
+      if (filterActive) {
+        filterActive.style.backgroundColor = hexColor;
+      }
+    }
+
+    // Inicialização padrão com o Ciano do Victor
+    window.onload = function() {
+      setThemeColor('#06b6d4');
+    };
+
+    // Alternância rápida de Abas e Cores Automáticas por Seção (Estilo Figma/Mac)
+    function switchTab(tabId) {
+      activeTabId = tabId;
+
+      const panes = document.querySelectorAll('.tab-pane');
+      panes.forEach(pane => {
+        pane.classList.add('hidden');
+        pane.classList.remove('block');
+      });
+
+      const activePane = document.getElementById(`tab-content-${tabId}`);
+      if (activePane) {
+        activePane.classList.remove('hidden');
+        activePane.classList.add('block');
+      }
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('text-white', 'bg-accent/10', 'accent-tab-active');
+        btn.classList.add('text-gray-400');
+        btn.style.backgroundColor = 'transparent';
+        btn.style.color = '';
+      });
+
+      const activeBtn = document.getElementById(`btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('text-white', 'bg-accent/10', 'accent-tab-active');
+        activeBtn.classList.remove('text-gray-400');
+      }
+
+      // Troca automática de cor ao alterar abas
+      if (tabColors[tabId]) {
+        setThemeColor(tabColors[tabId]);
+      }
+    }
+
+    // Filtros Rápidos de Portfólio
+    function filterPortfolio(category) {
+      const items = document.querySelectorAll('.portfolio-item');
+      items.forEach(item => {
+        if (category === 'all' || item.getAttribute('data-category') === category) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      const filterBtns = document.querySelectorAll('.port-filter-btn');
+      const currentAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#06b6d4';
+      
+      filterBtns.forEach(btn => {
+        btn.classList.remove('bg-accent', 'text-black', 'font-semibold', 'accent-bg-color', 'accent-active-filter');
+        btn.classList.add('bg-white/5', 'text-gray-400', 'hover:text-white');
+        btn.style.backgroundColor = '';
+        btn.style.color = '';
+      });
+
+      const activeBtn = document.querySelector(`[data-filter="${category}"]`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white/5', 'text-gray-400', 'hover:text-white');
+        activeBtn.classList.add('bg-accent', 'text-black', 'font-semibold', 'accent-bg-color', 'accent-active-filter');
+        activeBtn.style.backgroundColor = currentAccent;
+        activeBtn.style.color = '#000000';
+      }
+    }
+
+    // Modal de Detalhes com Suporte a Link de Aplicação Externo
+    const modal = document.getElementById('project-modal');
+    const modalContent = document.getElementById('project-modal-content');
+
+    function openProjectModal(title, category, desc, metric, appUrl) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-category').innerText = `[ ${category} ]`;
+      document.getElementById('modal-description').innerText = desc;
+      document.getElementById('modal-metric').innerText = metric;
+
+      const actionBtn = document.getElementById('modal-action-btn');
+      if (appUrl && appUrl !== '#') {
+        actionBtn.href = appUrl;
+        actionBtn.style.display = 'inline-flex';
+      } else {
+        actionBtn.style.display = 'none';
+      }
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modalContent.classList.remove('scale-95');
+      }, 50);
+    }
+
+    function closeProjectModal() {
+      modal.classList.add('opacity-0');
+      modalContent.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Gerenciar Envio de Formulário e Integração Direta com o WhatsApp
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const form = document.getElementById('contact-form');
+      const successBox = document.getElementById('form-success-box');
+
+      // Obter informações inseridas
+      const name = document.getElementById('form-name').value;
+      const email = document.getElementById('form-email').value;
+      const objective = document.getElementById('form-objective').value;
+      const message = document.getElementById('form-message').value;
+
+      // Montar mensagem para o WhatsApp com formatação básica
+      const textMessage = `Olá Victor! Me chamo *${name}* (${email}).%0A%0AEntro em contato com foco em: *${objective}*%0A%0A*Resumo do briefing:*%0A${message}`;
+      
+      // WhatsApp Link (Victor's Phone: +55 19 98976-5398)
+      const whatsappURL = `https://api.whatsapp.com/send?phone=5519989765398&text=${encodeURIComponent(textMessage)}`;
+
+      // Atualizar link de fallback no card de sucesso
+      document.getElementById('whatsapp-direct-link').href = whatsappURL;
+
+      form.classList.add('opacity-30');
+      form.style.pointerEvents = 'none';
+
+      // Disparar redirecionamento automático
+      window.open(whatsappURL, '_blank');
+
+      setTimeout(() => {
+        form.classList.add('hidden');
+        form.classList.remove('opacity-30');
+        successBox.classList.remove('hidden');
+        updateClickableListeners();
+      }, 800);
+    }
+
+    function resetContactForm() {
+      const form = document.getElementById('contact-form');
+      const successBox = document.getElementById('form-success-box');
+
+      form.reset();
+      form.classList.remove('hidden');
+      form.style.pointerEvents = 'auto';
+      successBox.classList.add('hidden');
+      updateClickableListeners();
+    }
+  </script>
+</body>
+</html>
