@@ -6,29 +6,13 @@
     <title>Delts Experience - Portfólio Imersivo PS2</title>
     <!-- Tailwind CSS para estilização moderna e flexível -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Remapeia a paleta "cyan" do Tailwind para tons de amarelo néon (cor tema do site) -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cyan: {
-                            400: '#ffc400',
-                            500: '#e0a800',
-                            950: '#332900'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <!-- Google Fonts: Rajdhani e Inter para um aspeto futurista e industrial -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* COR TEMA PRINCIPAL: amarelo néon (substitui o antigo ciano) */
-            --neon-cyan: #ffc400;
+            /* COR TEMA PRINCIPAL: ciano/azul (voltou ao original) */
+            --neon-cyan: #2ce3e3;
             --dark-bg: #070809;
             --panel-bg: #121316;
             --skew-angle: -18deg;
@@ -139,7 +123,7 @@
             height: 280px;
             background: #0d0d11;
             border-color: var(--neon-cyan);
-            box-shadow: 0 0 30px rgba(255, 196, 0, 0.3);
+            box-shadow: 0 0 30px rgba(44, 227, 227, 0.3);
         }
         .vhs-tape.active-tape .vhs-tape-title {
             display: none;
@@ -233,6 +217,37 @@
             animation: sign-glow-pulse 0.6s ease-in-out 2;
         }
 
+        /* Faíscas do letreiro: pipocam junto com o flicker da luz (estado ocioso) */
+        @keyframes spark-pop {
+            0%, 96%, 100% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+            50% { opacity: 1; transform: translate(var(--spark-dx, 6px), var(--spark-dy, 8px)) scale(1); }
+            60% { opacity: 0; transform: translate(var(--spark-dx, 6px), calc(var(--spark-dy, 8px) + 6px)) scale(0.5); }
+        }
+        .itsme-spark {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: #fff6da;
+            box-shadow: 0 0 6px 2px rgba(255, 196, 0, 0.95), 0 0 14px 4px rgba(255, 120, 0, 0.55);
+            opacity: 0;
+            pointer-events: none;
+            animation: spark-pop 4.5s infinite ease-out;
+        }
+        /* No clique, as faíscas ficam rápidas e intensas junto com o piscar amarelo/vermelho */
+        #ps2-boot-screen.boot-blink-active .itsme-spark {
+            animation: spark-pop 0.6s infinite ease-out;
+        }
+
+        /* A tela toda pisca invertendo a cor, em sincronia com o piscar do letreiro */
+        @keyframes screen-invert-flash {
+            0%, 35%, 100% { filter: invert(0); }
+            50%, 85% { filter: invert(1); }
+        }
+        #ps2-boot-screen.boot-blink-active {
+            animation: screen-invert-flash 0.6s ease-in-out 2;
+        }
+
         /* Vídeos de fundo dos painéis do acordeão: parados e escurecidos até o painel ficar em foco */
         .panel-bg-video {
             filter: brightness(0.4) saturate(0.7);
@@ -264,6 +279,16 @@
             <!-- Brilho amarelo -> vermelho sobre a área do letreiro: só anima após o clique -->
             <div class="itsme-sign-glow itsme-sign-glow-left"></div>
             <div class="itsme-sign-glow itsme-sign-glow-right"></div>
+
+            <!-- Faíscas do letreiro de néon: pipocam junto com o flicker da luz -->
+            <div class="itsme-spark" style="top:24%; left:8%;  --spark-dx:5px;  --spark-dy:9px;  animation-delay:0.1s;"></div>
+            <div class="itsme-spark" style="top:52%; left:14%; --spark-dx:-6px; --spark-dy:7px;  animation-delay:0.65s;"></div>
+            <div class="itsme-spark" style="top:38%; left:24%; --spark-dx:7px;  --spark-dy:-6px; animation-delay:3.15s;"></div>
+            <div class="itsme-spark" style="top:60%; left:5%;  --spark-dx:4px;  --spark-dy:8px;  animation-delay:3.75s;"></div>
+            <div class="itsme-spark" style="top:28%; right:9%;  --spark-dx:-5px; --spark-dy:8px;  animation-delay:0.35s;"></div>
+            <div class="itsme-spark" style="top:55%; right:16%; --spark-dx:6px;  --spark-dy:-7px; animation-delay:0.9s;"></div>
+            <div class="itsme-spark" style="top:44%; right:26%; --spark-dx:-7px; --spark-dy:6px;  animation-delay:3.4s;"></div>
+            <div class="itsme-spark" style="top:63%; right:7%;  --spark-dx:5px;  --spark-dy:-8px; animation-delay:4.05s;"></div>
         </div>
 
         <div class="absolute bottom-10 inset-x-0 flex justify-center z-10 pointer-events-none">
@@ -341,10 +366,6 @@
             
             <!-- FAIXA 01: BIOGRAPHY (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-1" onmouseenter="focusPanel(1)" onclick="enterSection(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
-                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): parado e escuro até entrar em foco -->
-                <video id="panel-video-1" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
-                <div class="panel-video-dim absolute inset-0"></div>
-
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-950 via-transparent to-transparent"></div>
                 </div>
@@ -352,6 +373,10 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
+                    <video id="panel-video-1" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">01</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">SOBRE MIM</span>
@@ -368,10 +393,6 @@
 
             <!-- FAIXA 02: EXPERIENCE (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-2" onmouseenter="focusPanel(2)" onclick="enterSection(2)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
-                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): parado e escuro até entrar em foco -->
-                <video id="panel-video-2" data-src="videos/2.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
-                <div class="panel-video-dim absolute inset-0"></div>
-
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-zinc-800 via-transparent to-transparent"></div>
                 </div>
@@ -379,6 +400,10 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
+                    <video id="panel-video-2" data-src="videos/2.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">02</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">O QUE EU FAÇO</span>
@@ -395,15 +420,15 @@
 
             <!-- FAIXA 03: PROJECTS (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-3" onmouseenter="focusPanel(3)" onclick="enterSection(3)" class="stripe-panel flex-[2.2] h-full border-r border-zinc-900/60 bg-[#15181c] relative overflow-hidden cursor-pointer group active-stripe">
-                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): ativo por defeito porque Projects começa em foco -->
-                <video id="panel-video-3" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
-                <div class="panel-video-dim absolute inset-0"></div>
-
                 <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/10 via-transparent to-transparent pointer-events-none"></div>
                 <!-- Inicia visível porque Projects começa ativo por defeito -->
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
+                    <video id="panel-video-3" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-cyan-400 font-rajdhani">03</span>
                         <span class="text-[9px] uppercase tracking-widest text-cyan-400 font-rajdhani font-bold">PORTFÓLIO DE PROJETOS</span>
@@ -420,10 +445,6 @@
 
             <!-- FAIXA 04: THE LAB (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-4" onmouseenter="focusPanel(4)" onclick="enterSection(4)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
-                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): parado e escuro até entrar em foco -->
-                <video id="panel-video-4" data-src="videos/4.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
-                <div class="panel-video-dim absolute inset-0"></div>
-
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-950 via-transparent to-transparent"></div>
                 </div>
@@ -431,6 +452,10 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
+                    <video id="panel-video-4" data-src="videos/4.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">04</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">PIANO & CRIATIVIDADE</span>
@@ -525,7 +550,7 @@
                     <div class="pt-2 border-t border-zinc-900">
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani block mb-2">Histórico de contribuições</span>
                         <a href="https://github.com/Delta-1" target="_blank" rel="noopener">
-                            <img src="https://ghchart.rshah.org/ffc400/Delta-1" alt="Histórico de contribuições no GitHub de Delta-1" class="w-full rounded border border-zinc-800 bg-zinc-950" loading="lazy">
+                            <img src="https://ghchart.rshah.org/2ce3e3/Delta-1" alt="Histórico de contribuições no GitHub de Delta-1" class="w-full rounded border border-zinc-800 bg-zinc-950" loading="lazy">
                         </a>
                     </div>
                 </div>
@@ -583,7 +608,7 @@
                 <!-- Projeto 1 (Ativo por defeito) -->
                 <div class="vhs-tape active-tape" data-proj-title="MONOFY" data-proj-desc="Faça monografias de uma forma rápida e segura com IA." data-proj-link="https://delta-1.github.io/MONOFY/" onclick="selectTape(this, event)">
                     <span class="vhs-tape-title">MONOFY</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=MONOFY')">
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=MONOFY')">
                         <span class="text-[9px] text-cyan-400 font-rajdhani font-semibold">IA_TOOL</span>
                         <div class="text-[12px] font-bold text-white uppercase leading-tight">MONOFY</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 01</span>
@@ -593,7 +618,7 @@
                 <!-- Projeto 2 -->
                 <div class="vhs-tape" data-proj-title="CURRICULY" data-proj-desc="Faça currículos de forma rápida e segura." data-proj-link="https://delta-1.github.io/Curriculy/" onclick="selectTape(this, event)">
                     <span class="vhs-tape-title">CURRICULY</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=CURRICULY')">
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=CURRICULY')">
                         <span class="text-[9px] text-pink-400 font-rajdhani font-semibold">IA_TOOL</span>
                         <div class="text-[12px] font-bold text-white uppercase leading-tight">CURRICULY</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 02</span>
@@ -603,7 +628,7 @@
                 <!-- Projeto 3 -->
                 <div class="vhs-tape" data-proj-title="BIBLIONMED" data-proj-desc="Biblioteca de medicina totalmente gratuita e open-source." data-proj-link="https://delta-1.github.io/Biblionmed/" onclick="selectTape(this, event)">
                     <span class="vhs-tape-title">BIBLIONMED</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=BIBLIONMED')">
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=BIBLIONMED')">
                         <span class="text-[9px] text-green-400 font-rajdhani font-semibold">OPEN_SOURCE</span>
                         <div class="text-[12px] font-bold text-white uppercase leading-tight">BIBLIONMED</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 03</span>
@@ -613,7 +638,7 @@
                 <!-- Projeto 4 -->
                 <div class="vhs-tape" data-proj-title="VITRINE PLAYER" data-proj-desc="Coloque vídeos, slides e imagens para passar na TV da sua loja." data-proj-link="https://delta-1.github.io/VITRINE.WEB.PLAYER/" onclick="selectTape(this, event)">
                     <span class="vhs-tape-title">VITRINE PLAYER</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=VITRINE')">
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=VITRINE')">
                         <span class="text-[9px] text-red-400 font-rajdhani font-semibold">DIGITAL_SIGNAGE</span>
                         <div class="text-[12px] font-bold text-white uppercase leading-tight">VITRINE PLAYER</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 04</span>
@@ -800,6 +825,19 @@
 
     </div>
 
+    <!-- Controlo de Volume Flutuante (Bottom-Right) -->
+    <div id="volume-control" class="fixed bottom-24 right-6 z-50 flex items-center gap-3 bg-[#0c0d0f]/95 border border-zinc-800/80 hover:border-cyan-400 px-4 py-3 rounded-full shadow-2xl transition-colors duration-300 font-rajdhani select-none">
+        <button onclick="toggleMute()" class="flex items-center justify-center h-5 w-5 text-cyan-400 hover:text-white transition shrink-0">
+            <svg id="volume-icon-on" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M18.36 5.64a9 9 0 010 12.72" />
+            </svg>
+            <svg id="volume-icon-off" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" />
+            </svg>
+        </button>
+        <input id="volume-slider" type="range" min="0" max="100" value="55" oninput="setVolume(this.value)" class="w-20 h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+    </div>
+
     <!-- Notificação de Reprodução de Música Flutuante (Bottom-Right) -->
     <div id="music-notification" class="fixed bottom-6 right-6 z-50 bg-[#0c0d0f]/95 border border-zinc-800/80 hover:border-cyan-400 px-4 py-3 rounded flex items-center space-x-4 shadow-2xl transition-all duration-500 translate-y-32 opacity-0 font-rajdhani">
         <!-- Equalizador de Áudio Animado -->
@@ -818,6 +856,8 @@
         let sidebarOpen = false;
         let focusedId = 3; // Projetos ativo por defeito no início
         let isFullScreen = false;
+        let masterVolume = 0.55; // Volume dos vídeos (0 a 1), controlado pelo botão no canto inferior direito
+        let isMuted = false;
 
         // --- SISTEMA DE INICIALIZAÇÃO SEGURA DO AUDIO CONTEXT ---
         let audioCtx = null;
@@ -942,8 +982,8 @@
             } catch(e){}
         }
 
-        // --- SISTEMA DE INICIALIZAÇÃO DE PIANO MAJESTOSO (PLAYSTATION COLD BOOT) ---
-        function playPS2Startup() {
+        // --- SOM DE FAÍSCA DE LETREIRO DE NÉON (transição de entrada) ---
+        function playSignSparkSound() {
             try {
                 const ctx = getAudioContext();
                 if (ctx.state === 'suspended') {
@@ -951,65 +991,37 @@
                 }
                 const now = ctx.currentTime;
 
-                // 1. Drone Subgrave Quente (Base de baixa frequência profunda)
-                const subOsc = ctx.createOscillator();
-                const subGain = ctx.createGain();
-                subOsc.type = "sine";
-                subOsc.frequency.setValueAtTime(65.41, now); // C2
-                subGain.gain.setValueAtTime(0.24, now);
-                subGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.3);
-                subOsc.connect(subGain);
-                subGain.connect(ctx.destination);
-                subOsc.start(now);
-                subOsc.stop(now + 2.4);
+                // Zumbido elétrico do transformador do letreiro
+                const buzzOsc = ctx.createOscillator();
+                const buzzGain = ctx.createGain();
+                buzzOsc.type = "sawtooth";
+                buzzOsc.frequency.setValueAtTime(90, now);
+                buzzGain.gain.setValueAtTime(0.05, now);
+                buzzGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.15);
+                buzzOsc.connect(buzzGain);
+                buzzGain.connect(ctx.destination);
+                buzzOsc.start(now);
+                buzzOsc.stop(now + 1.2);
 
-                // 2. Acorde de Piano-Synth Majestoso (C-Major: C3, G3, C4, E4, G4, C5)
-                const chordFreqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25];
-                chordFreqs.forEach((freq, index) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    
-                    osc.type = index % 2 === 0 ? "triangle" : "sine";
-                    osc.frequency.setValueAtTime(freq, now);
-                    
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.3);
-                    
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(now);
-                    osc.stop(now + 2.4);
+                // Faíscas: estalos curtos de ruído filtrado em momentos aleatórios
+                const sparkTimes = [0, 0.12, 0.22, 0.35, 0.5, 0.6, 0.78, 0.98];
+                sparkTimes.forEach((offset) => {
+                    const t = now + offset;
+                    const noise = ctx.createBufferSource();
+                    noise.buffer = getNoiseBuffer();
+                    const bp = ctx.createBiquadFilter();
+                    bp.type = "bandpass";
+                    bp.frequency.setValueAtTime(2500 + Math.random() * 3000, t);
+                    bp.Q.setValueAtTime(6, t);
+                    const g = ctx.createGain();
+                    g.gain.setValueAtTime(0.12 + Math.random() * 0.08, t);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03 + Math.random() * 0.02);
+                    noise.connect(bp);
+                    bp.connect(g);
+                    g.connect(ctx.destination);
+                    noise.start(t);
+                    noise.stop(t + 0.06);
                 });
-
-                // 3. Sino de Cristal Superior (Ataque brilhante e cristalino da tecla)
-                const chimeOsc = ctx.createOscillator();
-                const chimeGain = ctx.createGain();
-                chimeOsc.type = "sine";
-                chimeOsc.frequency.setValueAtTime(1046.50, now); // C6
-                chimeGain.gain.setValueAtTime(0.06, now);
-                chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
-                chimeOsc.connect(chimeGain);
-                chimeGain.connect(ctx.destination);
-                chimeOsc.start(now);
-                chimeOsc.stop(now + 0.9);
-
-                // 4. Brisa Atmosférica Sutil de Fundo
-                const noise = ctx.createBufferSource();
-                noise.buffer = getNoiseBuffer();
-                const noiseFilter = ctx.createBiquadFilter();
-                const noiseGain = ctx.createGain();
-                
-                noiseFilter.type = "lowpass";
-                noiseFilter.frequency.setValueAtTime(250, now);
-                noiseGain.gain.setValueAtTime(0.08, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.0);
-
-                noise.connect(noiseFilter);
-                noiseFilter.connect(noiseGain);
-                noiseGain.connect(ctx.destination);
-                noise.start(now);
-                noise.stop(now + 2.1);
-
             } catch (error) {}
         }
 
@@ -1104,8 +1116,8 @@
 
             const bootScreen = document.getElementById('ps2-boot-screen');
             bootScreen.style.cursor = "default";
-            bootScreen.classList.add('boot-blink-active'); // dispara o piscar amarelo -> vermelho 2x no letreiro
-            playPS2Startup();
+            bootScreen.classList.add('boot-blink-active'); // dispara o piscar amarelo -> vermelho 2x, as faíscas e a inversão de cor da tela
+            playSignSparkSound();
 
             // Aguarda os 2 ciclos do piscar (0.6s x 2) antes de revelar o portfólio
             setTimeout(() => {
@@ -1298,8 +1310,8 @@
                         vid.src = vid.dataset.src;
                         vid.dataset.loaded = "1";
                     }
-                    vid.volume = 0.55;
-                    vid.muted = false;
+                    vid.volume = masterVolume;
+                    vid.muted = isMuted;
                     // Se o navegador bloquear o áudio automático, toca mudo em vez de não tocar nada
                     vid.play().catch(() => {
                         vid.muted = true;
@@ -1316,6 +1328,52 @@
                 const vid = document.getElementById(`panel-video-${i}`);
                 if (vid) vid.pause();
             }
+        }
+
+        // --- CONTROLO DE VOLUME (botão flutuante no canto inferior direito) ---
+        function applyVolumeToVideos() {
+            for (let i = 1; i <= 4; i++) {
+                const vid = document.getElementById(`panel-video-${i}`);
+                if (vid) {
+                    vid.volume = masterVolume;
+                    vid.muted = isMuted;
+                }
+            }
+            // Vídeo do piano na aba The Lab, se existir
+            const pianoVideo = document.querySelector('#fv-content-4 video');
+            if (pianoVideo) pianoVideo.volume = masterVolume;
+        }
+
+        function updateVolumeIcon() {
+            const onIcon = document.getElementById('volume-icon-on');
+            const offIcon = document.getElementById('volume-icon-off');
+            if (onIcon) onIcon.classList.toggle('hidden', isMuted);
+            if (offIcon) offIcon.classList.toggle('hidden', !isMuted);
+        }
+
+        function setVolume(value) {
+            masterVolume = parseInt(value, 10) / 100;
+            isMuted = masterVolume === 0;
+            applyVolumeToVideos();
+            updateVolumeIcon();
+        }
+
+        function toggleMute() {
+            const slider = document.getElementById('volume-slider');
+            isMuted = !isMuted;
+
+            if (isMuted) {
+                slider.dataset.prevValue = slider.value;
+                slider.value = 0;
+                masterVolume = 0;
+            } else {
+                const prev = slider.dataset.prevValue || "55";
+                slider.value = prev;
+                masterVolume = parseInt(prev, 10) / 100;
+            }
+
+            applyVolumeToVideos();
+            updateVolumeIcon();
         }
 
         // --- EVENTO DE MOUSE SCROLL PARA TROCA DE ABAS ---
@@ -1380,7 +1438,7 @@
                 
                 if (Math.random() > 0.92) {
                     ctx.fillStyle = "#ffffff";
-                    ctx.shadowColor = "#ffc400";
+                    ctx.shadowColor = "#2ce3e3";
                     ctx.shadowBlur = 8;
                 } else {
                     ctx.fillStyle = `rgba(200, 210, 220, ${col.opacity})`;
