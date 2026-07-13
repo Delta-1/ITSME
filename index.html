@@ -195,8 +195,20 @@
         @keyframes eq-bar-2 { 0%, 100% { height: 40%; } 50% { height: 100%; } }
         @keyframes eq-bar-3 { 0%, 100% { height: 15%; } 50% { height: 80%; } }
 
-        /* Brilho amarelo -> vermelho sobre o letreiro real na foto de fundo.
-           Fica estático (sem animação) até o clique iniciar a transição. */
+        /* Brilho sobre o letreiro real na foto de fundo.
+           Estado ocioso: flicker sutil em amarelo, como um letreiro de neon de verdade.
+           No clique: pisca 2x amarelo -> vermelho antes de entrar no site. */
+        @keyframes itsme-idle-flicker {
+            0%, 100% { opacity: 0.85; background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
+            5%       { opacity: 0.45; }
+            10%      { opacity: 0.9; }
+            16%      { opacity: 0.6; }
+            22%, 68% { opacity: 0.85; }
+            71%      { opacity: 0.35; }
+            74%      { opacity: 0.85; }
+            85%      { opacity: 0.55; }
+            89%      { opacity: 0.9; }
+        }
         @keyframes sign-glow-pulse {
             0%   { background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
             50%  { background: radial-gradient(circle, rgba(255,43,43,0.65) 0%, rgba(255,43,43,0) 72%); }
@@ -208,12 +220,13 @@
             width: 36%;
             height: 60%;
             mix-blend-mode: screen;
-            opacity: 0;
             pointer-events: none;
             filter: blur(4px);
+            background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%);
+            animation: itsme-idle-flicker 4.5s infinite ease-in-out;
         }
         .itsme-sign-glow-left { left: 0%; }
-        .itsme-sign-glow-right { right: 0%; }
+        .itsme-sign-glow-right { right: 0%; animation-delay: 1.4s; }
         /* Ativado só no clique: pisca 2x (amarelo -> vermelho) antes de entrar no site */
         #ps2-boot-screen.boot-blink-active .itsme-sign-glow {
             opacity: 1;
@@ -300,7 +313,7 @@
     <header class="absolute top-6 left-8 right-8 z-30 flex justify-between items-center pointer-events-none">
         <div class="flex items-center space-x-4 pointer-events-auto">
             <div onclick="toggleSidebar()" class="cursor-pointer group flex items-center space-x-3">
-                <span class="text-3xl font-black italic tracking-tighter text-white font-rajdhani transition group-hover:text-cyan-400">LOGO</span>
+                <span class="text-3xl font-black italic tracking-tighter text-white font-rajdhani transition group-hover:text-cyan-400">V_CTORSZ</span>
                 <span class="text-[9px] font-rajdhani tracking-widest text-zinc-500 border border-zinc-800 px-2 py-0.5 rounded bg-zinc-950/60 backdrop-blur-sm">SYS_v2.6</span>
             </div>
         </div>
@@ -328,6 +341,10 @@
             
             <!-- FAIXA 01: BIOGRAPHY (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-1" onmouseenter="focusPanel(1)" onclick="enterSection(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
+                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): parado e escuro até entrar em foco -->
+                <video id="panel-video-1" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
+                <div class="panel-video-dim absolute inset-0"></div>
+
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-950 via-transparent to-transparent"></div>
                 </div>
@@ -335,10 +352,6 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
-                    <!-- Vídeo de fundo: parado e escuro até o painel entrar em foco -->
-                    <video id="panel-video-1" data-src="videos/1.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
-
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">01</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">SOBRE MIM</span>
@@ -355,6 +368,10 @@
 
             <!-- FAIXA 02: EXPERIENCE (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-2" onmouseenter="focusPanel(2)" onclick="enterSection(2)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
+                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): parado e escuro até entrar em foco -->
+                <video id="panel-video-2" data-src="videos/2.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
+                <div class="panel-video-dim absolute inset-0"></div>
+
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-zinc-800 via-transparent to-transparent"></div>
                 </div>
@@ -362,10 +379,6 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
-                    <!-- Vídeo de fundo: parado e escuro até o painel entrar em foco -->
-                    <video id="panel-video-2" data-src="videos/2.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
-
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">02</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">O QUE EU FAÇO</span>
@@ -382,15 +395,15 @@
 
             <!-- FAIXA 03: PROJECTS (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-3" onmouseenter="focusPanel(3)" onclick="enterSection(3)" class="stripe-panel flex-[2.2] h-full border-r border-zinc-900/60 bg-[#15181c] relative overflow-hidden cursor-pointer group active-stripe">
+                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): ativo por defeito porque Projects começa em foco -->
+                <video id="panel-video-3" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
+                <div class="panel-video-dim absolute inset-0"></div>
+
                 <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/10 via-transparent to-transparent pointer-events-none"></div>
                 <!-- Inicia visível porque Projects começa ativo por defeito -->
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
-                    <!-- Vídeo de fundo: ativo por defeito porque Projects começa em foco -->
-                    <video id="panel-video-3" data-src="videos/3.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
-
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-cyan-400 font-rajdhani">03</span>
                         <span class="text-[9px] uppercase tracking-widest text-cyan-400 font-rajdhani font-bold">PORTFÓLIO DE PROJETOS</span>
@@ -407,6 +420,10 @@
 
             <!-- FAIXA 04: THE LAB (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-4" onmouseenter="focusPanel(4)" onclick="enterSection(4)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
+                <!-- Vídeo de fundo (fora do contra-inclinado para preencher o painel diagonal de ponta a ponta): parado e escuro até entrar em foco -->
+                <video id="panel-video-4" data-src="videos/4.mp4" loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover"></video>
+                <div class="panel-video-dim absolute inset-0"></div>
+
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-950 via-transparent to-transparent"></div>
                 </div>
@@ -414,10 +431,6 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
-                    <!-- Vídeo de fundo: parado e escuro até o painel entrar em foco -->
-                    <video id="panel-video-4" data-src="videos/4.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
-
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">04</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">PIANO & CRIATIVIDADE</span>
@@ -713,7 +726,7 @@
         <div class="flex flex-col space-y-12">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-4xl font-black italic tracking-tighter text-white font-rajdhani">LOGO</h2>
+                    <h2 class="text-4xl font-black italic tracking-tighter text-white font-rajdhani">V_CTORSZ</h2>
                     <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani block mt-1">SISTEMA INTEGRADO DE NAVEGAÇÃO</span>
                 </div>
                 
@@ -1285,7 +1298,13 @@
                         vid.src = vid.dataset.src;
                         vid.dataset.loaded = "1";
                     }
-                    vid.play().catch(() => {});
+                    vid.volume = 0.55;
+                    vid.muted = false;
+                    // Se o navegador bloquear o áudio automático, toca mudo em vez de não tocar nada
+                    vid.play().catch(() => {
+                        vid.muted = true;
+                        vid.play().catch(() => {});
+                    });
                 } else {
                     vid.pause();
                 }
