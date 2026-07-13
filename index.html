@@ -92,75 +92,6 @@
             transform: skewX(15deg);
         }
 
-        /* Estilização da Prateleira VHS Kurosawa (Referência: 1000098734.jpg) */
-        .vhs-shelf {
-            display: flex;
-            align-items: flex-end;
-            gap: 16px;
-            overflow-x: auto;
-            padding: 24px 12px;
-            scrollbar-width: none;
-        }
-        .vhs-shelf::-webkit-scrollbar {
-            display: none;
-        }
-        .vhs-tape {
-            flex: 0 0 55px;
-            height: 260px;
-            background: #18191e;
-            border: 1px solid #2e3039;
-            border-radius: 4px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-            box-shadow: 5px 15px 25px rgba(0, 0, 0, 0.6);
-        }
-        .vhs-tape-title {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            transform: rotate(180deg);
-            font-size: 12px;
-            letter-spacing: 3px;
-            color: #8e929d;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            transition: color 0.3s;
-        }
-        .vhs-tape:hover .vhs-tape-title {
-            color: #ffffff;
-        }
-
-        /* Ativação dinâmica da cassete VHS */
-        .vhs-tape.active-tape {
-            flex: 0 0 180px;
-            height: 280px;
-            background: #0d0d11;
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 30px rgba(44, 227, 227, 0.3);
-        }
-        .vhs-tape.active-tape .vhs-tape-title {
-            display: none;
-        }
-        .vhs-tape-cover {
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 16px;
-            background-size: cover;
-            background-position: center;
-        }
-        .vhs-tape.active-tape .vhs-tape-cover {
-            opacity: 1;
-        }
-
         /* Entrada de ecrã inteiro ultra-suave */
         .fullview-active {
             opacity: 1 !important;
@@ -265,11 +196,27 @@
             animation: screen-invert-flash 0.6s ease-in-out 2;
         }
 
-        /* Vídeos de fundo dos painéis do acordeão: parados e escurecidos até o painel ficar em foco */
+        /* Vídeos de fundo dos painéis do acordeão: parados e escurecidos até o painel ficar em foco.
+           São maiores que o contentor para cobrir os cantos do painel inclinado sem esticar/deformar a imagem
+           (usa object-fit: cover, só corta as bordas). O corte diminui quando o painel fica ativo/maior. */
+        .panel-bg-video,
+        .panel-video-dim {
+            position: absolute;
+            top: -45%; left: -45%; right: -45%; bottom: -45%;
+            width: 190%;
+            height: 190%;
+            z-index: -10;
+            transition: filter 0.7s ease, opacity 0.7s ease, top 0.8s cubic-bezier(0.16, 1, 0.3, 1), left 0.8s cubic-bezier(0.16, 1, 0.3, 1), width 0.8s cubic-bezier(0.16, 1, 0.3, 1), height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .stripe-panel.active-stripe .panel-bg-video,
+        .stripe-panel.active-stripe .panel-video-dim {
+            top: -18%; left: -18%; right: -18%; bottom: -18%;
+            width: 136%;
+            height: 136%;
+        }
         .panel-bg-video {
             filter: brightness(0.4) saturate(0.7);
             opacity: 0.3;
-            transition: filter 0.7s ease, opacity 0.7s ease;
         }
         .stripe-panel.active-stripe .panel-bg-video {
             filter: brightness(1) saturate(1);
@@ -277,7 +224,6 @@
         }
         .panel-video-dim {
             background: rgba(0, 0, 0, 0.6);
-            transition: opacity 0.7s ease;
         }
         .stripe-panel.active-stripe .panel-video-dim {
             opacity: 0.35;
@@ -431,7 +377,7 @@
         <div class="skew-container w-full md:w-[116%] md:-ml-[8%] h-auto md:h-full flex flex-col md:flex-row">
             
             <!-- FAIXA 01: BIOGRAPHY (Otimização: onmouseenter foca, onclick entra) -->
-            <section id="panel-1" onmouseenter="focusPanel(1)" onclick="enterSection(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
+            <section id="panel-1" onmouseenter="focusPanel(1)" onclick="handlePanelTap(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-950 via-transparent to-transparent"></div>
                 </div>
@@ -440,8 +386,8 @@
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
                     <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
-                    <video id="panel-video-1" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+                    <video id="panel-video-1" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
+                    <div class="panel-video-dim"></div>
 
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">01</span>
@@ -458,7 +404,7 @@
             </section>
 
             <!-- FAIXA 02: EXPERIENCE (Otimização: onmouseenter foca, onclick entra) -->
-            <section id="panel-2" onmouseenter="focusPanel(2)" onclick="enterSection(2)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
+            <section id="panel-2" onmouseenter="focusPanel(2)" onclick="handlePanelTap(2)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-zinc-800 via-transparent to-transparent"></div>
                 </div>
@@ -467,8 +413,8 @@
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
                     <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
-                    <video id="panel-video-2" data-src="videos/2.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+                    <video id="panel-video-2" data-src="videos/2.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
+                    <div class="panel-video-dim"></div>
 
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">02</span>
@@ -485,15 +431,15 @@
             </section>
 
             <!-- FAIXA 03: PROJECTS (Otimização: onmouseenter foca, onclick entra) -->
-            <section id="panel-3" onmouseenter="focusPanel(3)" onclick="enterSection(3)" class="stripe-panel flex-[2.2] h-full border-r border-zinc-900/60 bg-[#15181c] relative overflow-hidden cursor-pointer group active-stripe">
+            <section id="panel-3" onmouseenter="focusPanel(3)" onclick="handlePanelTap(3)" class="stripe-panel flex-[2.2] h-full border-r border-zinc-900/60 bg-[#15181c] relative overflow-hidden cursor-pointer group active-stripe">
                 <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/10 via-transparent to-transparent pointer-events-none"></div>
                 <!-- Inicia visível porque Projects começa ativo por defeito -->
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
                     <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
-                    <video id="panel-video-3" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+                    <video id="panel-video-3" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
+                    <div class="panel-video-dim"></div>
 
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-cyan-400 font-rajdhani">03</span>
@@ -510,7 +456,7 @@
             </section>
 
             <!-- FAIXA 04: THE LAB (Otimização: onmouseenter foca, onclick entra) -->
-            <section id="panel-4" onmouseenter="focusPanel(4)" onclick="enterSection(4)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
+            <section id="panel-4" onmouseenter="focusPanel(4)" onclick="handlePanelTap(4)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-950 via-transparent to-transparent"></div>
                 </div>
@@ -519,8 +465,8 @@
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
                     <!-- Vídeo de fundo maior que o contentor (sem esticar/deformar) para cobrir os cantos do painel inclinado -->
-                    <video id="panel-video-4" data-src="videos/4.mp4" loop playsinline preload="none" class="panel-bg-video absolute -inset-[60%] w-[220%] h-[220%] object-cover -z-10"></video>
-                    <div class="panel-video-dim absolute -inset-[60%] w-[220%] h-[220%] -z-10"></div>
+                    <video id="panel-video-4" data-src="videos/4.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
+                    <div class="panel-video-dim"></div>
 
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">04</span>
@@ -537,7 +483,7 @@
             </section>
 
             <!-- FAIXA 05: CONTACT (Otimização: onmouseenter foca, onclick entra) -->
-            <section id="panel-5" onmouseenter="focusPanel(5)" onclick="enterSection(5)" class="stripe-panel flex-1 h-full bg-[#121316] relative overflow-hidden cursor-pointer group">
+            <section id="panel-5" onmouseenter="focusPanel(5)" onclick="handlePanelTap(5)" class="stripe-panel flex-1 h-full bg-[#121316] relative overflow-hidden cursor-pointer group">
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
                     <div class="absolute inset-0 bg-gradient-to-br from-zinc-900 via-transparent to-transparent"></div>
                 </div>
@@ -574,6 +520,13 @@
         <div id="fv-content-1" class="hidden w-full max-w-6xl max-h-[85vh] overflow-y-auto flex flex-col space-y-6 pr-2">
             <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 01 // QUEM SOU EU ]</span>
             <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">MEDICINA + TECNOLOGIA</h2>
+
+            <!-- Galeria de fotos: alimentada automaticamente por uma pasta do Google Drive -->
+            <div class="space-y-3">
+                <h3 class="text-cyan-400 font-bold font-rajdhani text-sm uppercase tracking-widest">Galeria</h3>
+                <div id="drive-gallery-container" class="rounded-lg border border-zinc-900 bg-zinc-950/60 overflow-hidden"></div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-2">
                 <div class="md:col-span-2 space-y-4 text-sm text-zinc-400 leading-relaxed">
                     <p>
@@ -665,64 +618,58 @@
         </div>
 
         <!-- CONTEÚDO SELECIONADO: PROJECTS (ID: 3) com a magnífica prateleira Kurosawa -->
-        <div id="fv-content-3" class="hidden w-full max-w-5xl max-h-[85vh] overflow-y-auto flex flex-col space-y-4 pr-2">
-            <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold">[ SECÇÃO 03 // PRATELEIRA DE PROJETOS ]</span>
-            <h2 class="text-2xl md:text-4xl font-black italic text-white tracking-tight font-rajdhani">GABINETE KUROSAWA VHS</h2>
+        <div id="fv-content-3" class="hidden w-full max-w-5xl max-h-[85vh] overflow-y-auto flex flex-col space-y-6 pr-2">
+            <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold">[ SECÇÃO 03 // PROJETOS ]</span>
+            <h2 class="text-2xl md:text-4xl font-black italic text-white tracking-tight font-rajdhani">PORTFÓLIO DE PROJETOS</h2>
 
-            <!-- A Prateleira VHS Kurosawa -->
-            <div class="vhs-shelf" id="vhs-shelf-container">
-                <!-- Projeto 1 (Ativo por defeito) -->
-                <div class="vhs-tape active-tape" data-proj-title="MONOFY" data-proj-desc="Faça monografias de uma forma rápida e segura com IA." data-proj-link="https://delta-1.github.io/MONOFY/" onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">MONOFY</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=MONOFY')">
-                        <span class="text-[9px] text-cyan-400 font-rajdhani font-semibold">IA_TOOL</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">MONOFY</div>
-                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 01</span>
+            <!-- Grelha de cartões de projetos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <a href="https://delta-1.github.io/MONOFY/" target="_blank" rel="noopener" class="group block rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 overflow-hidden transition duration-300">
+                    <div class="h-28 bg-gradient-to-br from-cyan-950 via-zinc-900 to-black flex items-center justify-center">
+                        <span class="text-2xl font-black italic text-cyan-400/60 group-hover:text-cyan-400 font-rajdhani tracking-widest transition">MONOFY</span>
                     </div>
-                </div>
-
-                <!-- Projeto 2 -->
-                <div class="vhs-tape" data-proj-title="CURRICULY" data-proj-desc="Faça currículos de forma rápida e segura." data-proj-link="https://delta-1.github.io/Curriculy/" onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">CURRICULY</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=CURRICULY')">
-                        <span class="text-[9px] text-pink-400 font-rajdhani font-semibold">IA_TOOL</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">CURRICULY</div>
-                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 02</span>
+                    <div class="p-5 space-y-2">
+                        <span class="text-[9px] text-cyan-400 font-rajdhani font-semibold uppercase tracking-widest">IA_TOOL</span>
+                        <h3 class="text-white font-bold text-sm">MONOFY</h3>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Faça monografias de uma forma rápida e segura com IA.</p>
+                        <span class="inline-flex items-center gap-1 text-[11px] text-cyan-400 font-rajdhani font-bold uppercase tracking-widest pt-1">Abrir projeto <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></span>
                     </div>
-                </div>
+                </a>
 
-                <!-- Projeto 3 -->
-                <div class="vhs-tape" data-proj-title="BIBLIONMED" data-proj-desc="Biblioteca de medicina totalmente gratuita e open-source." data-proj-link="https://delta-1.github.io/Biblionmed/" onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">BIBLIONMED</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=BIBLIONMED')">
-                        <span class="text-[9px] text-green-400 font-rajdhani font-semibold">OPEN_SOURCE</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">BIBLIONMED</div>
-                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 03</span>
+                <a href="https://delta-1.github.io/Curriculy/" target="_blank" rel="noopener" class="group block rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 overflow-hidden transition duration-300">
+                    <div class="h-28 bg-gradient-to-br from-pink-950 via-zinc-900 to-black flex items-center justify-center">
+                        <span class="text-2xl font-black italic text-pink-400/60 group-hover:text-pink-400 font-rajdhani tracking-widest transition">CURRICULY</span>
                     </div>
-                </div>
-
-                <!-- Projeto 4 -->
-                <div class="vhs-tape" data-proj-title="VITRINE PLAYER" data-proj-desc="Coloque vídeos, slides e imagens para passar na TV da sua loja." data-proj-link="https://delta-1.github.io/VITRINE.WEB.PLAYER/" onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">VITRINE PLAYER</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/2ce3e3?text=VITRINE')">
-                        <span class="text-[9px] text-red-400 font-rajdhani font-semibold">DIGITAL_SIGNAGE</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">VITRINE PLAYER</div>
-                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 04</span>
+                    <div class="p-5 space-y-2">
+                        <span class="text-[9px] text-pink-400 font-rajdhani font-semibold uppercase tracking-widest">IA_TOOL</span>
+                        <h3 class="text-white font-bold text-sm">CURRICULY</h3>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Faça currículos de forma rápida e segura.</p>
+                        <span class="inline-flex items-center gap-1 text-[11px] text-cyan-400 font-rajdhani font-bold uppercase tracking-widest pt-1">Abrir projeto <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></span>
                     </div>
-                </div>
-            </div>
+                </a>
 
-            <!-- Dados Descritivos Dinâmicos da fita ativa -->
-            <div class="border-t border-zinc-900 pt-4 mt-2 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                <div>
-                    <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold block mb-1" id="project-tag">PROJETO</span>
-                    <h4 class="text-xl font-bold text-white mb-2" id="project-title">MONOFY</h4>
-                    <p class="text-xs text-zinc-400 leading-relaxed max-w-xl" id="project-desc">
-                        Faça monografias de uma forma rápida e segura com IA.
-                    </p>
-                </div>
-                <a id="project-link" href="https://delta-1.github.io/MONOFY/" target="_blank" rel="noopener" class="shrink-0 inline-flex items-center justify-center gap-2 bg-cyan-400 hover:bg-cyan-500 text-black font-rajdhani font-bold tracking-widest text-xs uppercase px-6 py-3 rounded transition shadow-lg shadow-cyan-500/10">
-                    Abrir Projeto <span>&rarr;</span>
+                <a href="https://delta-1.github.io/Biblionmed/" target="_blank" rel="noopener" class="group block rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 overflow-hidden transition duration-300">
+                    <div class="h-28 bg-gradient-to-br from-green-950 via-zinc-900 to-black flex items-center justify-center">
+                        <span class="text-2xl font-black italic text-green-400/60 group-hover:text-green-400 font-rajdhani tracking-widest transition">BIBLIONMED</span>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        <span class="text-[9px] text-green-400 font-rajdhani font-semibold uppercase tracking-widest">OPEN_SOURCE</span>
+                        <h3 class="text-white font-bold text-sm">BIBLIONMED</h3>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Biblioteca de medicina totalmente gratuita e open-source.</p>
+                        <span class="inline-flex items-center gap-1 text-[11px] text-cyan-400 font-rajdhani font-bold uppercase tracking-widest pt-1">Abrir projeto <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></span>
+                    </div>
+                </a>
+
+                <a href="https://delta-1.github.io/VITRINE.WEB.PLAYER/" target="_blank" rel="noopener" class="group block rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 overflow-hidden transition duration-300">
+                    <div class="h-28 bg-gradient-to-br from-red-950 via-zinc-900 to-black flex items-center justify-center">
+                        <span class="text-xl font-black italic text-red-400/60 group-hover:text-red-400 font-rajdhani tracking-widest transition text-center px-4">VITRINE PLAYER</span>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        <span class="text-[9px] text-red-400 font-rajdhani font-semibold uppercase tracking-widest">DIGITAL_SIGNAGE</span>
+                        <h3 class="text-white font-bold text-sm">VITRINE PLAYER</h3>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Coloque vídeos, slides e imagens para passar na TV da sua loja.</p>
+                        <span class="inline-flex items-center gap-1 text-[11px] text-cyan-400 font-rajdhani font-bold uppercase tracking-widest pt-1">Abrir projeto <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></span>
+                    </div>
                 </a>
             </div>
         </div>
@@ -751,27 +698,30 @@
                 </div>
             </div>
 
-            <!-- Bónus: laboratório interativo Matrix -->
-            <div class="bg-zinc-950 p-6 rounded-lg border border-zinc-900 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-4">
-                    <h3 class="text-white font-rajdhani font-bold text-md tracking-wider">BÓNUS: TERMINAL DE CONTROLO MATRIX</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-[11px] text-zinc-500 block mb-1">VELOCIDADE DOS DADOS (FPS)</label>
-                            <input id="matrix-speed-range" type="range" min="10" max="60" value="30" oninput="updateMatrixConfig()" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-zinc-500 block mb-1">DENSIDADE DA CHUVA</label>
-                            <input id="matrix-density-range" type="range" min="10" max="100" value="50" oninput="updateMatrixConfig()" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
-                        </div>
-                    </div>
+            <!-- Galeria de vídeos do canal -->
+            <div class="space-y-3">
+                <h3 class="text-white font-rajdhani font-bold text-md tracking-wider">MAIS VÍDEOS DO CANAL</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="https://www.youtube.com/@Deltspriggan" target="_blank" rel="noopener" class="group aspect-video rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 flex flex-col items-center justify-center gap-2 transition">
+                        <svg class="h-7 w-7 text-zinc-600 group-hover:text-cyan-400 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span class="text-[9px] text-zinc-600 group-hover:text-white transition uppercase tracking-wider">Ver vídeo</span>
+                    </a>
+                    <a href="https://www.youtube.com/@Deltspriggan" target="_blank" rel="noopener" class="group aspect-video rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 flex flex-col items-center justify-center gap-2 transition">
+                        <svg class="h-7 w-7 text-zinc-600 group-hover:text-cyan-400 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span class="text-[9px] text-zinc-600 group-hover:text-white transition uppercase tracking-wider">Ver vídeo</span>
+                    </a>
+                    <a href="https://www.youtube.com/@Deltspriggan" target="_blank" rel="noopener" class="group aspect-video rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 flex flex-col items-center justify-center gap-2 transition">
+                        <svg class="h-7 w-7 text-zinc-600 group-hover:text-cyan-400 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span class="text-[9px] text-zinc-600 group-hover:text-white transition uppercase tracking-wider">Ver vídeo</span>
+                    </a>
+                    <a href="https://www.youtube.com/@Deltspriggan" target="_blank" rel="noopener" class="group aspect-video rounded-lg border border-zinc-900 hover:border-cyan-400 bg-zinc-950 flex flex-col items-center justify-center gap-2 transition">
+                        <svg class="h-7 w-7 text-zinc-600 group-hover:text-cyan-400 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span class="text-[9px] text-zinc-600 group-hover:text-white transition uppercase tracking-wider">Ver vídeo</span>
+                    </a>
                 </div>
-
-                <div class="flex flex-col justify-center space-y-2 border-l border-zinc-900 pl-8">
-                    <span class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase">AMBIENTE INTEGRADO</span>
-                    <h4 class="text-white font-bold text-sm">Visualizer v2.0</h4>
-                    <p class="text-[11px] text-zinc-400 leading-relaxed">Interaja com a densidade e a velocidade do código Matrix que aparece no fundo desta secção.</p>
-                </div>
+                <a href="https://www.youtube.com/@Deltspriggan" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs text-cyan-400 hover:text-white font-rajdhani font-bold uppercase tracking-widest transition">
+                    Ver todos os vídeos no canal <span>&rarr;</span>
+                </a>
             </div>
         </div>
 
@@ -829,35 +779,50 @@
             </div>
 
             <!-- Navegação Rápida -->
-            <ul class="space-y-6">
+            <ul class="space-y-5">
                 <li>
-                    <a href="#biography" onclick="handleMenuClick(1)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
-                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">RACE (BIOGRAPHY)</span>
-                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[01]</span>
+                    <a href="#biography" onclick="handleMenuClick(1)" class="group flex flex-col py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="flex items-center justify-between">
+                            <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">RACE (BIOGRAPHY)</span>
+                            <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[01]</span>
+                        </span>
+                        <span class="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition mt-0.5">Quem sou eu, minha galeria e onde me encontrar</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#experience" onclick="handleMenuClick(2)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
-                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">CUSTOMIZE (EXPERIENCE)</span>
-                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[02]</span>
+                    <a href="#experience" onclick="handleMenuClick(2)" class="group flex flex-col py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="flex items-center justify-between">
+                            <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">CUSTOMIZE (EXPERIENCE)</span>
+                            <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[02]</span>
+                        </span>
+                        <span class="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition mt-0.5">Tecnologia, design e gestão — o que sei fazer</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#projects" onclick="handleMenuClick(3)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
-                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">SETTINGS (PROJECTS)</span>
-                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[03]</span>
+                    <a href="#projects" onclick="handleMenuClick(3)" class="group flex flex-col py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="flex items-center justify-between">
+                            <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">SETTINGS (PROJECTS)</span>
+                            <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[03]</span>
+                        </span>
+                        <span class="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition mt-0.5">Monofy, Curriculy, Biblionmed e Vitrine Player</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#lab" onclick="handleMenuClick(4)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
-                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">MULTIPLAYER (THE LAB)</span>
-                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[04]</span>
+                    <a href="#lab" onclick="handleMenuClick(4)" class="group flex flex-col py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="flex items-center justify-between">
+                            <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">MULTIPLAYER (THE LAB)</span>
+                            <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[04]</span>
+                        </span>
+                        <span class="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition mt-0.5">Piano, criatividade e vídeos do canal</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#quit" onclick="handleMenuClick(5)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-red-400 transition duration-300">
-                        <span class="text-2xl font-black tracking-widest text-zinc-500 group-hover:text-red-500 font-rajdhani italic transition">QUIT (EXIT PORTFOLIO)</span>
-                        <span class="text-xs text-zinc-600 group-hover:text-red-400 transition">[05]</span>
+                    <a href="#contact" onclick="handleMenuClick(5)" class="group flex flex-col py-2 border-b border-zinc-900 hover:border-red-400 transition duration-300">
+                        <span class="flex items-center justify-between">
+                            <span class="text-2xl font-black tracking-widest text-zinc-500 group-hover:text-red-500 font-rajdhani italic transition">CONNECT (CONTACT)</span>
+                            <span class="text-xs text-zinc-600 group-hover:text-red-400 transition">[05]</span>
+                        </span>
+                        <span class="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition mt-0.5">Vamos criar seu site, app ou ideia</span>
                     </a>
                 </li>
             </ul>
@@ -869,20 +834,20 @@
             <div class="grid grid-cols-2 gap-4">
                 
                 <!-- Notícia 1 -->
-                <div class="tilted-news-card bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 p-4 cursor-pointer">
+                <div onclick="handleMenuClick(3)" class="tilted-news-card bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 p-4 cursor-pointer">
                     <div class="tilted-news-card-inner">
-                        <span class="text-[9px] text-cyan-400 font-rajdhani block mb-1">JUNHO 2026</span>
-                        <h5 class="text-xs font-bold text-white line-clamp-1">ENGINE ATUALIZADA</h5>
-                        <p class="text-[10px] text-zinc-500 mt-1 line-clamp-2">Navegação por Scroll inteligente integrada.</p>
+                        <span class="text-[9px] text-cyan-400 font-rajdhani block mb-1">NOVIDADE</span>
+                        <h5 class="text-xs font-bold text-white line-clamp-1">4 NOVOS PROJETOS</h5>
+                        <p class="text-[10px] text-zinc-500 mt-1 line-clamp-2">Monofy, Curriculy, Biblionmed e Vitrine Player no ar.</p>
                     </div>
                 </div>
 
                 <!-- Notícia 2 -->
-                <div class="tilted-news-card bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 p-4 cursor-pointer">
+                <div onclick="handleMenuClick(1)" class="tilted-news-card bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 p-4 cursor-pointer">
                     <div class="tilted-news-card-inner">
-                        <span class="text-[9px] text-cyan-400 font-rajdhani block mb-1">MAIO 2026</span>
-                        <h5 class="text-xs font-bold text-white line-clamp-1">MATRIX RAIN TRANSITION</h5>
-                        <p class="text-[10px] text-zinc-500 mt-1 line-clamp-2">Animação de transição baseada na queda de ideogramas.</p>
+                        <span class="text-[9px] text-cyan-400 font-rajdhani block mb-1">EM BREVE</span>
+                        <h5 class="text-xs font-bold text-white line-clamp-1">GALERIA DE FOTOS</h5>
+                        <p class="text-[10px] text-zinc-500 mt-1 line-clamp-2">Meus momentos, atualizados direto do Drive.</p>
                     </div>
                 </div>
 
@@ -1226,6 +1191,17 @@
             }, 6000);
         }
 
+        // --- TOQUE NO PAINEL: primeiro toque só seleciona (foca), o segundo toque confirma e entra.
+        //     No desktop o hover já foca antes do clique, então continua a entrar num clique só. ---
+        function handlePanelTap(id) {
+            if (isFullScreen) return;
+            if (focusedId === id) {
+                enterSection(id);
+            } else {
+                focusPanel(id);
+            }
+        }
+
         // --- ENTRAR EM MODO ECRÃ INTEIRO COM TRANSIÇÃO MATRIX DE CARREGAMENTO ---
         function enterSection(id) {
             if (isFullScreen) return;
@@ -1534,42 +1510,9 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        function updateMatrixConfig() {
-            const speedSlider = document.getElementById('matrix-speed-range');
-            const densitySlider = document.getElementById('matrix-density-range');
-            
-            matrixSpeed = parseInt(speedSlider.value);
-            matrixDensity = parseInt(densitySlider.value);
-            
-            if (isFullScreen) {
-                startMatrixRain();
-            }
-        }
 
         window.addEventListener('resize', resizeCanvas);
 
-        // --- NAVEGAÇÃO DO RACK DE CASSETES VHS (Referência: 1000098734.jpg) ---
-        function selectTape(element, event) {
-            event.stopPropagation();
-            
-            const tapes = document.querySelectorAll('.vhs-tape');
-            tapes.forEach(t => t.classList.remove('active-tape'));
-            
-            element.classList.add('active-tape');
-            playPS2SelectSound(); // Som do clique tátil clássico do console!
-            
-            const title = element.getAttribute('data-proj-title');
-            const desc = element.getAttribute('data-proj-desc');
-            const link = element.getAttribute('data-proj-link');
-
-            document.getElementById('project-title').textContent = title;
-            document.getElementById('project-desc').textContent = desc;
-
-            const linkEl = document.getElementById('project-link');
-            if (linkEl && link) linkEl.href = link;
-
-            element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        }
 
         // --- SUBMISSÃO DO TERMINAL DE CONTACTO ---
         function handleContactSubmit(event) {
@@ -1648,14 +1591,35 @@
             }, 350);
         }
 
+        // --- GALERIA DE FOTOS (pasta do Google Drive) ---
+        // Cole aqui o ID da pasta do Drive quando tiver o link (a parte da URL depois de "/folders/").
+        // A pasta precisa de estar partilhada como "Qualquer pessoa com o link pode ver".
+        const DRIVE_GALLERY_FOLDER_ID = "";
+
+        function renderDriveGallery() {
+            const container = document.getElementById('drive-gallery-container');
+            if (!container) return;
+
+            if (DRIVE_GALLERY_FOLDER_ID) {
+                container.innerHTML = `<iframe src="https://drive.google.com/embeddedfolderview?id=${DRIVE_GALLERY_FOLDER_ID}#grid" class="w-full h-72 md:h-96 border-0" loading="lazy" title="Galeria de fotos"></iframe>`;
+            } else {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-36 text-center px-6 space-y-2">
+                        <span class="text-2xl">🖼️</span>
+                        <p class="text-xs text-zinc-500">Galeria em construção. Em breve, fotos dos meus momentos por aqui.</p>
+                    </div>`;
+            }
+        }
+
         // --- INICIALIZAÇÃO DA SESSÃO ---
         window.onload = () => {
             resizeCanvas();
+            renderDriveGallery();
 
             // Evento sonoro sutil de cursor do console ao passar o mouse em painéis diagonais e cassetes
-            // Nota: Os painéis diagonais agora chamam focusPanel(id) nativamente no "onmouseenter", que por sua vez chama playPS2HoverSound(). 
+            // Nota: Os painéis diagonais agora chamam focusPanel(id) nativamente no "onmouseenter", que por sua vez chama playPS2HoverSound().
             // O seletor abaixo exclui as abas principais para evitar a execução duplicada de sons.
-            const interactives = document.querySelectorAll('.vhs-tape, .tilted-news-card, button, a');
+            const interactives = document.querySelectorAll('.tilted-news-card, button, a');
             interactives.forEach(elem => {
                 elem.addEventListener('mouseenter', () => {
                     playPS2HoverSound();
