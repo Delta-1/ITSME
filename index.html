@@ -1,1015 +1,1463 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-PT">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DELTS | Portfolio</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts para Tipografia Editorial e Moderna -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            display: ['"Syne"', 'sans-serif'],
-            mono: ['"Space Mono"', 'monospace'],
-          },
-          animation: {
-            'spin-slow': 'spin 15s linear infinite',
-            'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
-          colors: {
-            accent: {
-              DEFAULT: '#06b6d4', 
-              glow: 'rgba(6, 182, 212, 0.15)',
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delts Experience - Portfólio Imersivo PS2</title>
+    <!-- Tailwind CSS para estilização moderna e flexível -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Remapeia a paleta "cyan" do Tailwind para tons de amarelo néon (cor tema do site) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyan: {
+                            400: '#ffc400',
+                            500: '#e0a800',
+                            950: '#332900'
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-
-  <style>
-    /* Ocultar cursor nativo do mouse em dispositivos com ponteiro */
-    @media (pointer: fine) {
-      body, a, button, input, textarea, select, [role="button"] {
-        cursor: none !important;
-      }
-    }
-
-    /* CONTAINER DO CURSOR: Posição direta sem lag */
-    .custom-cursor-container {
-      position: fixed;
-      width: 24px;
-      height: 24px;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate3d(-50%, -50%, 0);
-      display: none;
-      will-change: transform;
-    }
+    </script>
+    <!-- Google Fonts: Rajdhani e Inter para um aspeto futurista e industrial -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     
-    @media (pointer: fine) {
-      .custom-cursor-container {
-        display: block;
-      }
-    }
+    <style>
+        :root {
+            /* COR TEMA PRINCIPAL: amarelo néon (substitui o antigo ciano) */
+            --neon-cyan: #ffc400;
+            --neon-yellow: #ffc400;
+            --neon-red: #ff2b2b;
+            --dark-bg: #070809;
+            --panel-bg: #121316;
+            --skew-angle: -18deg;
+            --unskew-angle: 18deg;
+        }
 
-    /* ELEMENTO VISUAL DO CURSOR */
-    .custom-cursor-visual {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-    }
+        body {
+            background-color: var(--dark-bg);
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            /* Evita flashes visuais indesejados de seleção de texto ao clicar rapidamente */
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-    /* Linhas diagonais do X */
-    .custom-cursor-visual::before,
-    .custom-cursor-visual::after {
-      content: '';
-      position: absolute;
-      background-color: var(--accent-color, #06b6d4);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
+        /* Permite seleção de texto apenas em campos de entrada */
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+        }
 
-    /* Linha diagonal 1 */
-    .custom-cursor-visual::before {
-      top: 0;
-      left: 11px;
-      width: 2px;
-      height: 24px;
-      transform: rotate(45deg);
-    }
+        .font-rajdhani {
+            font-family: 'Rajdhani', sans-serif;
+        }
 
-    /* Linha diagonal 2 */
-    .custom-cursor-visual::after {
-      top: 11px;
-      left: 0;
-      width: 24px;
-      height: 2px;
-      transform: rotate(45deg);
-    }
+        /* Contentores inclinados diagonalmente (Referência: image_ff2b49.png) */
+        .skew-container {
+            transform: skewX(var(--skew-angle)) scaleX(1.15);
+            transform-origin: center;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-    /* Efeito de hover nos elementos clicáveis: cresce e gira mais 90 graus */
-    body.hovering-clickable .custom-cursor-visual {
-      transform: scale(1.6) rotate(135deg);
-    }
-    
-    body.hovering-clickable .custom-cursor-visual::before,
-    body.hovering-clickable .custom-cursor-visual::after {
-      background-color: #ffffff;
-      box-shadow: 0 0 8px var(--accent-color, #06b6d4);
-    }
+        .unskew-content {
+            transform: skewX(var(--unskew-angle)) scaleX(1);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-    /* Efeito de clique */
-    body.clicking .custom-cursor-visual {
-      transform: scale(0.8) rotate(45deg);
-    }
+        .stripe-panel {
+            transition: flex 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        background-color 0.5s ease, 
+                        border-color 0.5s ease,
+                        opacity 0.6s ease;
+        }
 
-    /* Scrollbar minimalista */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0d0e11;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #27272a;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--accent-color, #06b6d4);
-    }
+        /* Máscara curva para a barra lateral de configurações (Referência: image_ff2e8e.png) */
+        .curved-sidebar {
+            clip-path: url(#curved-sidebar-mask);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.9);
+        }
 
-    /* Textura de ruído */
-    .bg-grain {
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
-    }
+        .tilted-news-card {
+            transform: skewX(-15deg);
+            transition: all 0.3s ease;
+        }
+        .tilted-news-card-inner {
+            transform: skewX(15deg);
+        }
 
-    /* Glassmorphism */
-    .glass-card {
-      background: rgba(18, 18, 22, 0.7);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
+        /* Estilização da Prateleira VHS Kurosawa (Referência: 1000098734.jpg) */
+        .vhs-shelf {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 24px 12px;
+            scrollbar-width: none;
+        }
+        .vhs-shelf::-webkit-scrollbar {
+            display: none;
+        }
+        .vhs-tape {
+            flex: 0 0 55px;
+            height: 260px;
+            background: #18191e;
+            border: 1px solid #2e3039;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            box-shadow: 5px 15px 25px rgba(0, 0, 0, 0.6);
+        }
+        .vhs-tape-title {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: #8e929d;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+        .vhs-tape:hover .vhs-tape-title {
+            color: #ffffff;
+        }
 
-    /* Dock estilo Mac/Figma na parte inferior */
-    .mac-dock {
-      background: rgba(10, 11, 15, 0.65);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    .mac-dock:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.15);
-    }
+        /* Ativação dinâmica da cassete VHS */
+        .vhs-tape.active-tape {
+            flex: 0 0 180px;
+            height: 280px;
+            background: #0d0d11;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(255, 196, 0, 0.3);
+        }
+        .vhs-tape.active-tape .vhs-tape-title {
+            display: none;
+        }
+        .vhs-tape-cover {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+            background-size: cover;
+            background-position: center;
+        }
+        .vhs-tape.active-tape .vhs-tape-cover {
+            opacity: 1;
+        }
 
-    .dock-item {
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, color 0.3s ease;
-    }
+        /* Entrada de ecrã inteiro ultra-suave */
+        .fullview-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: translateY(0) scale(1) !important;
+        }
 
-    .dock-item:hover {
-      transform: translateY(-8px) scale(1.1);
-    }
-  </style>
+        /* ANIMAÇÃO DO STROBE FLASH INTENSO (Sincronizado milimetricamente com o som de obturador mecânico de câmara) */
+        @keyframes intense-cyber-flash {
+            0% { opacity: 0; background-color: #ffffff; }
+            4% { opacity: 1; background-color: #ffffff; }
+            8% { opacity: 0; }
+            12% { opacity: 1; background-color: var(--neon-cyan); }
+            16% { opacity: 0; }
+            22% { opacity: 1; background-color: #ffffff; }
+            28% { opacity: 0; }
+            34% { opacity: 1; background-color: var(--neon-cyan); }
+            40% { opacity: 0; }
+            46% { opacity: 1; background-color: #ffffff; }
+            54% { opacity: 0; }
+            62% { opacity: 0.95; background-color: var(--neon-cyan); }
+            70% { opacity: 0; }
+            82% { opacity: 0.7; background-color: #ffffff; }
+            100% { opacity: 0; }
+        }
+
+        .trigger-screen-flash {
+            animation: intense-cyber-flash 0.85s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        /* Animações do Equalizador de Música */
+        @keyframes eq-bar-1 { 0%, 100% { height: 20%; } 50% { height: 95%; } }
+        @keyframes eq-bar-2 { 0%, 100% { height: 40%; } 50% { height: 100%; } }
+        @keyframes eq-bar-3 { 0%, 100% { height: 15%; } 50% { height: 80%; } }
+
+        /* Estilo da Grelha PS2 e Animações da Introdução */
+        @keyframes ps2-pulse {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.35; }
+        }
+        .ps2-dust-grid {
+            background-size: 40px 40px;
+            background-image: radial-gradient(circle, rgba(255, 196, 0, 0.15) 1px, transparent 1px);
+            animation: ps2-pulse 8s infinite ease-in-out;
+        }
+
+        /* CARA DO SITE: néon "ITSME" a piscar de amarelo para vermelho */
+        @keyframes itsme-neon-blink {
+            0%, 44%  { color: var(--neon-yellow);
+                       text-shadow: 0 0 10px var(--neon-yellow), 0 0 24px rgba(255,196,0,0.9), 0 0 50px rgba(255,196,0,0.55), 0 0 95px rgba(255,196,0,0.35); }
+            47%      { opacity: 0.55; }
+            50%, 94% { color: var(--neon-red);
+                       text-shadow: 0 0 10px var(--neon-red), 0 0 24px rgba(255,43,43,0.9), 0 0 50px rgba(255,43,43,0.55), 0 0 95px rgba(255,43,43,0.35); }
+            97%      { opacity: 0.55; }
+            100%     { color: var(--neon-yellow);
+                       text-shadow: 0 0 10px var(--neon-yellow), 0 0 24px rgba(255,196,0,0.9), 0 0 50px rgba(255,196,0,0.55), 0 0 95px rgba(255,196,0,0.35); }
+        }
+        .itsme-blink {
+            animation: itsme-neon-blink 1.8s infinite;
+            opacity: 1;
+        }
+    </style>
 </head>
-<body class="bg-[#090a0f] text-gray-100 font-sans selection:bg-accent selection:text-black overflow-x-hidden bg-grain relative pb-32">
+<body class="relative flex h-screen w-screen overflow-hidden">
 
-  <!-- Custom Cursor Container (Zero Delay) -->
-  <div id="cursor-container" class="custom-cursor-container">
-    <div id="cursor-visual" class="custom-cursor-visual"></div>
-  </div>
-
-  <!-- Ambient Glow Elements -->
-  <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-accent-glow rounded-full blur-[150px] pointer-events-none opacity-40 transition-colors duration-500" id="ambient-glow-1"></div>
-  <div class="absolute bottom-[20%] right-[-10%] w-[40vw] h-[40vw] bg-accent-glow rounded-full blur-[130px] pointer-events-none opacity-30 transition-colors duration-500" id="ambient-glow-2"></div>
-
-  <!-- Top Header -->
-  <header class="w-full fixed top-0 z-40 glass-card border-b border-white/5 px-6 py-4 md:px-12 flex justify-between items-center transition-all duration-300">
-    <div class="flex items-center gap-3">
-      <span class="font-display text-xl tracking-widest text-white flex items-center gap-2 select-none">
-        DELTS
-      </span>
-    </div>
-
-    <!-- Indicador de Status minimalista -->
-    <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-accent animate-pulse-subtle accent-bg-color"></span>
-      <span class="text-[10px] font-mono tracking-widest text-gray-400 uppercase select-none">// DISPONÍVEL AGORA</span>
-    </div>
-  </header>
-
-  <main class="min-h-screen pt-28 pb-12 px-4 md:px-12 flex items-center justify-center">
-    <div class="w-full max-w-7xl mx-auto">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- COLD BOOT: ECRÃ DE ENTRADA DO PLAYSTATION (DELTS SPECIAL EDITION) -->
+    <div id="ps2-boot-screen" class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center transition-all duration-700">
+        <!-- Nevoeiro e Grelha do PS2 -->
+        <div class="absolute inset-0 ps2-dust-grid pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/15 via-transparent to-transparent pointer-events-none"></div>
         
-        <!-- COLUNA ESQUERDA: Informações Fixas / Hero Base -->
-        <div class="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-28">
-          
-          <div class="space-y-1">
-            <h1 id="brand-name" class="font-display text-5xl md:text-6xl xl:text-7xl uppercase tracking-tighter leading-none text-white select-none transition-all duration-500">
-              VICTOR H.<br>SOUZA
-            </h1>
-            <div class="flex items-center gap-3">
-              <p class="text-xs font-mono tracking-widest text-gray-400 uppercase">
-                DESENVOLVEDOR WEB, DESIGNER & ADM
-              </p>
-              <div class="h-px flex-grow bg-white/10"></div>
-            </div>
-          </div>
+        <!-- Elemento de Grelha 3D Canvas de Fundo (Torres do console) -->
+        <canvas id="ps2-canvas" class="absolute inset-0 z-0 pointer-events-none"></canvas>
 
-          <!-- Hero Graphic: Foto do Victor com Texto Girando em Círculo (Inspirado no image_cca6a3.png) -->
-          <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden glass-card p-6 flex items-end justify-between group">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10"></div>
-            
-            <!-- Desenho Conceitual do Artista / Portrait Placeholder no Centro (Foco em design de vetores) -->
-            <div class="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#111217]">
-              <svg class="w-4/5 h-4/5 text-white/5 group-hover:text-white/10 transition-colors duration-500" viewBox="0 0 100 100" fill="none" stroke="currentColor">
-                <circle cx="50" cy="50" r="40" stroke-width="0.5" stroke-dasharray="2 2" />
-                <polygon points="50,20 75,70 25,70" stroke-width="0.75" />
-                <path d="M 50,50 L 50,20 M 50,50 L 75,70 M 50,50 L 25,70" stroke-width="0.5" />
-                <circle cx="50" cy="50" r="4" fill="currentColor" />
-              </svg>
-              <span class="absolute bottom-6 font-mono text-[9px] text-white/40 tracking-[0.4em] uppercase">DELTS DEVELOPMENT</span>
+        <div id="boot-logo-container" class="relative z-10 flex flex-col items-center space-y-10 text-center px-6">
+            <!-- CARA DO SITE: néon "ITSME" a piscar de amarelo para vermelho -->
+            <div class="flex flex-col items-center space-y-3">
+                <h1 class="itsme-blink text-7xl md:text-9xl font-black italic tracking-[0.15em] font-rajdhani select-none">ITSME</h1>
+                <p class="text-[10px] md:text-xs tracking-[0.5em] text-zinc-500 font-rajdhani uppercase select-none">DELTS EXPERIENCE // PORTFÓLIO IMERSIVO</p>
             </div>
 
-            <!-- Badge Giratório de Texto Circular (Alinhado exatamente à imagem image_cca6a3.png) -->
-            <div class="absolute top-6 right-6 z-20">
-              <div class="relative w-28 h-28 flex items-center justify-center">
-                <svg class="absolute w-full h-full animate-spin-slow" viewBox="0 0 100 100">
-                  <path id="circlePath" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="none" />
-                  <text class="text-[7px] font-mono fill-white tracking-[0.16em] uppercase">
-                    <textPath href="#circlePath">
-                      • VICTOR H. SOUZA • INNOVATION • TECHNOLOGY • DESIGN • EDUCATION
-                    </textPath>
-                  </text>
-                </svg>
-                <div class="w-3 h-3 rounded-full bg-accent glow-dot accent-bg-color"></div>
-              </div>
-            </div>
-
-            <!-- Seta decorativa removida para máxima fidelidade conceitual e limpeza visual -->
-
-            <div class="z-20">
-              <span class="text-[10px] font-mono px-2 py-1 rounded bg-accent/20 text-accent font-semibold uppercase accent-text-color accent-bg-color-10">
-                Inovando Sempre
-              </span>
-              <p class="text-xs text-gray-400 mt-2 font-mono">// Remoto (Disponível Globalmente)</p>
-            </div>
-          </div>
-
-          <!-- Redes Sociais do Victor (Altamente Visíveis e Estilizadas com Ícones) -->
-          <div class="glass-card p-4 rounded-xl flex flex-col gap-3">
-            <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest">// CONECTAR AGORA</span>
-            <div class="grid grid-cols-2 gap-3">
-              <a href="https://github.com/Delta-1" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-300">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.193 22 16.44 22 12.017 22 6.484 17.522 2 12 2z"/>
-                </svg>
-                <span class="font-mono text-xs">GITHUB</span>
-              </a>
-              <a href="https://www.instagram.com/v_ctorsz/" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-300">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                </svg>
-                <span class="font-mono text-xs">INSTAGRAM</span>
-              </a>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- COLUNA DIREITA: Abas de conteúdo dinâmico -->
-        <div class="lg:col-span-7 space-y-6">
-
-          <!-- ABA 1: DNA (SOBRE MIM) - Escondida no mobile se selecionada outra aba -->
-          <section id="tab-content-about" class="tab-pane block space-y-6 transition-all duration-300">
-            <div class="glass-card p-8 rounded-2xl relative overflow-hidden border-l-4 border-accent accent-border-color">
-              <div class="space-y-6">
-                <div class="flex justify-between items-center">
-                  <h2 class="font-display text-2xl uppercase tracking-tight text-white flex items-center gap-2">
-                    CREATIVE DNA
-                  </h2>
-                  <span class="font-mono text-xs text-accent accent-text-color font-semibold uppercase tracking-wider">[ Core Profile ]</span>
-                </div>
-
-                <!-- Estatísticas Reais do Victor -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-white/5">
-                  <div class="space-y-1">
-                    <p class="text-3xl font-display font-bold text-accent accent-text-color">6+</p>
-                    <p class="text-xs text-gray-400 font-mono uppercase tracking-wider">Projetos Ativos</p>
-                  </div>
-                  <div class="space-y-1">
-                    <p class="text-3xl font-display font-bold text-accent accent-text-color">4</p>
-                    <p class="text-xs text-gray-400 font-mono uppercase tracking-wider">Áreas de Atuação</p>
-                  </div>
-                  <div class="space-y-1">
-                    <p class="text-3xl font-display font-bold text-white flex items-center gap-2">
-                      100% <span class="text-accent accent-text-color">Inovador</span>
-                    </p>
-                    <p class="text-xs text-gray-400 font-mono uppercase tracking-wider">Estratégia & Tecnologia</p>
-                  </div>
-                </div>
-
-                <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light">
-                  Sou um desenvolvedor e criador de soluções digitais com formação em <span class="text-white font-medium">Tecnologia da Informação</span>, <span class="text-white font-medium">Administração</span> e experiência acadêmica em <span class="text-white font-medium">Química</span>, atualmente cursando <span class="text-white font-medium">Medicina</span>. Minha trajetória é marcada pela busca constante por inovação, unindo tecnologia, design e estratégia para desenvolver ferramentas que simplificam processos e ampliam o acesso ao conhecimento. Acredito que a tecnologia deve ser utilizada para potencializar pessoas e transformar ideias em soluções reais.
-                </p>
-
-                <!-- Histórico e Áreas de Atuação -->
-                <div class="pt-2 space-y-4">
-                  <h3 class="text-xs font-mono uppercase tracking-widest text-gray-400">// MULTIDISCIPLINARIDADE</h3>
-                  <div class="bg-black/20 p-4 rounded-xl border border-white/5 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                      <p class="text-sm font-semibold text-white">Desenvolvedor Web & Aplicações | Designer Digital | Técnico em ADM</p>
-                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-gray-400 w-fit">Ativo</span>
-                    </div>
-                    <p class="text-xs text-gray-400">Atuação que integra medicina, química acadêmica, gestão de negócios e desenvolvimento de sistemas sob inteligência artificial.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Citação do Jensen Huang -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="glass-card p-6 rounded-xl flex flex-col justify-between h-44">
-                <span class="font-mono text-[10px] text-gray-500">// FILOSOFIA DE IA</span>
-                <p class="text-xs font-light text-gray-300 italic">"A inteligência artificial não vai te tirar o emprego, mas alguém que saiba usá-la pode."</p>
-                <span class="text-[10px] font-mono text-accent accent-text-color mt-1">— Jensen Huang</span>
-                <div class="w-full h-1 bg-gradient-to-r from-accent to-transparent accent-gradient-from mt-2"></div>
-              </div>
-              <div class="glass-card p-6 rounded-xl flex flex-col justify-between h-44">
-                <span class="font-mono text-[10px] text-gray-500">// DESIGN & EFICIÊNCIA</span>
-                <p class="text-xs font-light text-gray-300">Minha visão une a sensibilidade humanizada da área de saúde à precisão técnica e estruturada do desenvolvimento de softwares.</p>
-                <div class="w-full h-1 bg-gradient-to-r from-white/20 to-transparent"></div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ABA 2: PROJETOS AUTORAIS -->
-          <section id="tab-content-work" class="tab-pane hidden space-y-6 transition-all duration-300">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h2 class="font-display text-2xl uppercase text-white">PROJETOS AUTORAIS</h2>
-              <div class="flex flex-wrap gap-1.5" id="portfolio-filters">
-                <button onclick="filterPortfolio('all')" class="port-filter-btn px-3 py-1 rounded bg-accent text-black font-semibold text-xs uppercase accent-bg-color accent-active-filter" data-filter="all">Tudo</button>
-                <button onclick="filterPortfolio('ai')" class="port-filter-btn px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs uppercase" data-filter="ai">IA</button>
-                <button onclick="filterPortfolio('edu')" class="port-filter-btn px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs uppercase" data-filter="edu">Educação/Saúde</button>
-                <button onclick="filterPortfolio('util')" class="port-filter-btn px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs uppercase" data-filter="util">Utilitários</button>
-              </div>
-            </div>
-
-            <!-- Grid de Projetos do Victor -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="portfolio-grid">
-              
-              <!-- Projeto 1: PIPU -->
-              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="ai">
-                <div>
-                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
-                      <svg class="w-16 h-16 text-accent/30 group-hover:text-accent/60 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                        <circle cx="12" cy="10" r="2" fill="currentColor"/>
-                      </svg>
-                    </div>
-                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Inteligência Artificial</span>
-                  </div>
-                  <div class="p-5 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">PIPU</h3>
-                      <span class="text-[10px] font-mono text-gray-500">2026</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light">Companheira virtual desenvolvida com foco em interação humana e conversação inteligente.</p>
-                  </div>
-                </div>
-                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
-                  <button onclick="openProjectModal('PIPU', 'Inteligência Artificial', 'PIPU é uma companheira virtual focada em criar interações humanas ricas e assistências personalizadas. Trata-se de uma inteligência com alto poder de conversação natural que fornece respostas inteligentes em tempo de resposta otimizado.', 'Relacionamento Digital Interativo', 'https://delta-1.github.io/PIPU-MODEL/')" class="text-xs text-accent font-semibold hover:underline">
-                    Detalhes →
-                  </button>
-                  <a href="https://delta-1.github.io/PIPU-MODEL/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
-                    Acessar App ↗
-                  </a>
-                </div>
-              </div>
-
-              <!-- Projeto 2: MONOFY -->
-              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="ai">
-                <div>
-                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
-                      <svg class="w-16 h-16 text-white/20 group-hover:text-white/40 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                      </svg>
-                    </div>
-                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">EdTech & IA</span>
-                  </div>
-                  <div class="p-5 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">MONOFY</h3>
-                      <span class="text-[10px] font-mono text-gray-500">2026</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light">Plataforma inteligente para automação de monografias e trabalhos acadêmicos de alta complexidade.</p>
-                  </div>
-                </div>
-                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
-                  <button onclick="openProjectModal('MONOFY', 'Educação e Inteligência Artificial', 'O MONOFY é uma plataforma web e mobile desenvolvida para simplificar a rotina de produção de trabalhos acadêmicos, monografias e artigos científicos com auxílio refinado de Inteligência Artificial.', 'Automatização e Simplificação de Pesquisa', 'https://delta-1.github.io/MONOFY/')" class="text-xs text-accent font-semibold hover:underline">
-                    Detalhes →
-                  </button>
-                  <a href="https://delta-1.github.io/MONOFY/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
-                    Acessar App ↗
-                  </a>
-                </div>
-              </div>
-
-              <!-- Projeto 3: BIBLIONMED -->
-              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="edu">
-                <div>
-                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
-                      <svg class="w-16 h-16 text-accent/30 group-hover:text-accent/60 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                      </svg>
-                    </div>
-                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Educação & Saúde</span>
-                  </div>
-                  <div class="p-5 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">BIBLIONMED</h3>
-                      <span class="text-[10px] font-mono text-gray-500">2026</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light">Plataforma de acesso gratuito e unificado a acervos e livros-texto da área médica.</p>
-                  </div>
-                </div>
-                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
-                  <button onclick="openProjectModal('BIBLIONMED', 'Educação e Saúde', 'BIBLIONMED nasceu do entendimento de Victor sobre as barreiras de acesso aos caros materiais de medicina. Uma plataforma rápida e otimizada que promove a democratização literária da saúde.', 'Acesso Gratuito e Descentralizado', 'https://delta-1.github.io/Biblionmed/')" class="text-xs text-accent font-semibold hover:underline">
-                    Detalhes →
-                  </button>
-                  <a href="https://delta-1.github.io/Biblionmed/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
-                    Acessar App ↗
-                  </a>
-                </div>
-              </div>
-
-              <!-- Projeto 4: CURRICULY -->
-              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="util">
-                <div>
-                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
-                      <svg class="w-16 h-16 text-white/20 group-hover:text-white/40 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                      </svg>
-                    </div>
-                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Produtividade</span>
-                  </div>
-                  <div class="p-5 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">CURRICULY</h3>
-                      <span class="text-[10px] font-mono text-gray-500">2026</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light">Sistema dinâmico e inteligente para criação de currículos profissionais de alto impacto.</p>
-                  </div>
-                </div>
-                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
-                  <button onclick="openProjectModal('CURRICULY', 'Produtividade e RH', 'Desenvolvemos o CURRICULY para resolver a complicação de formatação estrutural e de layout em seleções corporativas. O algoritmo gera uma folha esteticamente perfeita com poucos campos.', 'Elaboração Curricular Veloz e Otimizada', 'https://delta-1.github.io/Curriculy/')" class="text-xs text-accent font-semibold hover:underline">
-                    Detalhes →
-                  </button>
-                  <a href="https://delta-1.github.io/Curriculy/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
-                    Acessar App ↗
-                  </a>
-                </div>
-              </div>
-
-              <!-- Projeto 5: VITRINE WEB -->
-              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="util">
-                <div>
-                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
-                      <svg class="w-16 h-16 text-accent/30 group-hover:text-accent/60 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                        <line x1="8" y1="21" x2="16" y2="21"/>
-                        <line x1="12" y1="17" x2="12" y2="21"/>
-                      </svg>
-                    </div>
-                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-gray-400">Comunicação</span>
-                  </div>
-                  <div class="p-5 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">VITRINE WEB</h3>
-                      <span class="text-[10px] font-mono text-gray-500">2026</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light">Exibidor de mídias e apresentações totalmente online, intuitivo e sem custos.</p>
-                  </div>
-                </div>
-                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
-                  <button onclick="openProjectModal('VITRINE WEB', 'Comunicação Digital', 'O Vitrine Web opera como um ecossistema gratuito e focado na facilidade de apresentações, integrando arquivos de mídia diretamente no navegador sem travamentos.', 'Solução Descomplicada de Exposição', 'https://delta-1.github.io/VITRINE.WEB.PLAYER/')" class="text-xs text-accent font-semibold hover:underline">
-                    Detalhes →
-                  </button>
-                  <a href="https://delta-1.github.io/VITRINE.WEB.PLAYER/" target="_blank" class="px-3 py-1.5 rounded bg-white/5 hover:bg-accent hover:text-black font-mono text-[10px] transition-all duration-300">
-                    Acessar App ↗
-                  </a>
-                </div>
-              </div>
-
-              <!-- Projeto 6: GESTORFISCALPRO -->
-              <div class="portfolio-item glass-card rounded-xl overflow-hidden group hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between" data-category="util">
-                <div>
-                  <div class="aspect-video bg-[#15161d] relative flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#15161d]">
-                      <svg class="w-16 h-16 text-white/20 group-hover:text-white/40 transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="4" y="4" width="16" height="16" rx="2"/>
-                        <line x1="9" y1="9" x2="15" y2="9"/>
-                        <line x1="9" y1="13" x2="15" y2="13"/>
-                        <line x1="12" y1="9" x2="12" y2="15"/>
-                      </svg>
-                    </div>
-                    <span class="absolute top-3 left-3 font-mono text-[9px] px-2 py-0.5 rounded bg-black/60 border border-white/10 text-accent accent-text-color font-semibold">Em Progresso</span>
-                  </div>
-                  <div class="p-5 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="font-semibold text-white group-hover:text-accent transition-colors">GESTORFISCALPRO</h3>
-                      <span class="text-[10px] font-mono text-gray-500">Dev</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light">Automação de cálculos complexos de impostos e apoio gerencial tributário de alta fidelidade.</p>
-                  </div>
-                </div>
-                <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-2">
-                  <button onclick="openProjectModal('GESTORFISCALPRO', 'Gestão Tributária', 'Unindo o conhecimento de Administração ao desenvolvimento de software, este app visa facilitar a vida do pequeno e médio empreendedor brasileiro, automatizando o cálculo de impostos.', 'Foco em Automação Tributária', '#')" class="text-xs text-accent font-semibold hover:underline">
-                    Detalhes →
-                  </button>
-                  <span class="px-3 py-1.5 rounded bg-white/5 text-gray-500 font-mono text-[10px] select-none cursor-not-allowed">
-                    Em Breve ⌛
-                  </span>
-                </div>
-              </div>
-
-            </div>
-          </section>
-
-          <!-- ABA 3: HABILIDADES & TOOLKIT -->
-          <section id="tab-content-skills" class="tab-pane hidden space-y-6 transition-all duration-300">
-            <div class="glass-card p-8 rounded-2xl space-y-6">
-              <div class="flex justify-between items-center">
-                <h2 class="font-display text-2xl uppercase text-white">HABILIDADES & TOOLKIT</h2>
-                <span class="font-mono text-xs text-accent accent-text-color font-semibold">[ Perfil Técnico ]</span>
-              </div>
-
-              <p class="text-gray-400 text-sm leading-relaxed font-light">
-                Com uma mente analítica refinada que transita entre lógica de programação, estratégias administrativas, e rigor científico conceitual.
-              </p>
-
-              <!-- Barras de Progresso e Habilidades -->
-              <div class="space-y-4">
-                
-                <!-- Skill 1 -->
-                <div class="space-y-1.5">
-                  <div class="flex justify-between text-xs font-mono">
-                    <span class="text-white">DESENVOLVIMENTO WEB E APLICAÇÕES</span>
-                    <span class="text-accent accent-text-color">95%</span>
-                  </div>
-                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 95%"></div>
-                  </div>
-                </div>
-
-                <!-- Skill 2 -->
-                <div class="space-y-1.5">
-                  <div class="flex justify-between text-xs font-mono">
-                    <span class="text-white">INTELIGÊNCIA ARTIFICIAL E AUTOMAÇÃO</span>
-                    <span class="text-accent accent-text-color">90%</span>
-                  </div>
-                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 90%"></div>
-                  </div>
-                </div>
-
-                <!-- Skill 3 -->
-                <div class="space-y-1.5">
-                  <div class="flex justify-between text-xs font-mono">
-                    <span class="text-white">DESIGN DE INTERFACES E IDENTIDADE VISUAL</span>
-                    <span class="text-accent accent-text-color">85%</span>
-                  </div>
-                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 85%"></div>
-                  </div>
-                </div>
-
-                <!-- Skill 4 -->
-                <div class="space-y-1.5">
-                  <div class="flex justify-between text-xs font-mono">
-                    <span class="text-white">GESTÃO ADMINISTRATIVA E PLANEJAMENTO</span>
-                    <span class="text-accent accent-text-color">80%</span>
-                  </div>
-                  <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-accent rounded-full accent-bg-color" style="width: 80%"></div>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Lista completa de Tags Adicionais -->
-              <div class="pt-4 border-t border-white/5 space-y-3">
-                <span class="text-xs font-mono uppercase text-gray-500">// ARSENAL COMPLEMENTAR</span>
-                <div class="flex flex-wrap gap-2">
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Python</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Low-Code</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">No-Code</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">UI/UX</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">APIs</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Automação</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Branding</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Desenvolvimento Mobile</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Banco de Dados</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Marketing Digital</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Pesquisa Científica</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Tecnologia Educacional</span>
-                  <span class="text-xs px-3 py-1 rounded bg-white/5 border border-white/10 text-gray-300">Product Design</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ABA 4: CONTATO -->
-          <section id="tab-content-contact" class="tab-pane hidden space-y-6 transition-all duration-300">
-            <div class="glass-card p-8 rounded-2xl space-y-6">
-              <div class="space-y-2">
-                <h2 class="font-display text-2xl uppercase text-white">VAMOS INICIAR UMA SOLUÇÃO?</h2>
-                <p class="text-gray-400 text-sm font-light leading-relaxed">
-                  Interessado em desenvolver automações, sistemas de inteligência artificial ou consultoria tecnológica? Preencha os detalhes abaixo para abrirmos uma transmissão instantânea no meu WhatsApp.
-                </p>
-              </div>
-
-              <!-- Formulário conectado direto com o WhatsApp do Victor -->
-              <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div class="space-y-1">
-                    <label for="form-name" class="text-xs font-mono text-gray-400 uppercase">Seu Nome *</label>
-                    <input type="text" id="form-name" required class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent transition-colors accent-focus-border">
-                  </div>
-                  <div class="space-y-1">
-                    <label for="form-email" class="text-xs font-mono text-gray-400 uppercase">Seu E-mail *</label>
-                    <input type="email" id="form-email" required class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent transition-colors accent-focus-border">
-                  </div>
-                </div>
-
-                <div class="space-y-1">
-                  <label for="form-objective" class="text-xs font-mono text-gray-400 uppercase">Escopo do Projeto</label>
-                  <select id="form-objective" class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-accent transition-colors accent-focus-border">
-                    <option value="Automação ou Inteligência Artificial" class="bg-[#090a0f]">Automação ou Inteligência Artificial</option>
-                    <option value="Desenvolvimento Web ou Mobile" class="bg-[#090a0f]">Desenvolvimento Web ou Mobile</option>
-                    <option value="Branding e Interface Design" class="bg-[#090a0f]">Branding & Interface Design</option>
-                    <option value="Gestão e Consultoria de Projetos" class="bg-[#090a0f]">Gestão e Consultoria de Projetos</option>
-                  </select>
-                </div>
-
-                <div class="space-y-1">
-                  <label for="form-message" class="text-xs font-mono text-gray-400 uppercase">Breve resumo da ideia</label>
-                  <textarea id="form-message" rows="4" required class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent transition-colors accent-focus-border" placeholder="Conte-me sobre o que deseja arquitetar..."></textarea>
-                </div>
-
-                <button type="submit" class="w-full py-3 rounded-lg bg-accent text-black font-semibold uppercase text-xs tracking-wider hover:brightness-110 active:scale-[0.99] transition-all duration-200 accent-bg-color">
-                  Enviar Mensagem para o meu WhatsApp
+            <!-- Botão MIM: entra no site -->
+            <div class="flex flex-col items-center space-y-4">
+                <button id="press-start-btn" onclick="initiatePS2ConsoleBoot()" class="group px-14 py-4 bg-transparent border-2 border-cyan-400/50 hover:border-cyan-400 text-cyan-400 hover:text-white rounded-full font-rajdhani font-bold tracking-[0.45em] text-sm uppercase transition-all duration-500 hover:bg-cyan-400/5 hover:shadow-[0_0_30px_rgba(255,196,0,0.35)] select-none">
+                    MIM
                 </button>
-              </form>
+                <p class="text-[9px] tracking-[0.35em] text-zinc-600 font-rajdhani uppercase select-none animate-pulse">Clique em MIM para entrar</p>
+            </div>
+        </div>
+    </div>
 
-              <div id="form-success-box" class="hidden bg-accent/10 border border-accent/20 rounded-xl p-6 text-center space-y-3 transition-all duration-300 accent-bg-color-10 accent-border-color-20">
-                <svg class="w-12 h-12 text-accent mx-auto accent-text-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
+    <!-- Máscara SVG para a curvatura do menu lateral esquerdo -->
+    <svg class="absolute w-0 h-0" width="0" height="0">
+        <defs>
+            <clipPath id="curved-sidebar-mask" clipPathUnits="objectBoundingBox">
+                <path d="M 0,0 L 0.88,0 Q 0.62,0.5 0.88,1 L 0,1 Z" />
+            </clipPath>
+        </defs>
+    </svg>
+
+    <!-- Overlay para o efeito de Strobe Flash Intenso -->
+    <div id="flash-overlay" class="fixed inset-0 z-[100] pointer-events-none opacity-0"></div>
+
+    <!-- Escurecimento de Fundo (Backdrop) ao abrir o Menu de Configurações -->
+    <div id="menu-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/75 backdrop-blur-[3px] z-[45] opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
+    <!-- Canvas para a Chuva de Códigos estilo Matrix (Fidelidade: image_0d58b8.jpg) -->
+    <canvas id="matrix-canvas" class="absolute inset-0 z-40 pointer-events-none opacity-0 transition-opacity duration-500"></canvas>
+
+    <!-- Modal de Sucesso Customizado (Substitui o alert() padrão) -->
+    <div id="success-modal" class="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+        <div class="bg-[#0b0c0f] border border-cyan-400 p-8 rounded max-w-md w-full mx-4 text-center space-y-6 shadow-2xl shadow-cyan-500/10 font-rajdhani">
+            <div class="flex justify-center">
+                <div class="h-16 w-16 flex items-center justify-center rounded-full border border-cyan-400/30 text-cyan-400 text-3xl animate-pulse">
+                    ✓
+                </div>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-2xl font-black tracking-widest text-white uppercase">SINAL TRANSMITIDO</h3>
+                <p class="text-xs text-zinc-400 uppercase tracking-wider leading-relaxed">
+                    Os seus dados foram codificados com sucesso. A conexão responderá em breve.
+                </p>
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full bg-cyan-400 hover:bg-cyan-500 text-black font-bold tracking-widest text-xs uppercase py-3 transition rounded duration-300 shadow-lg shadow-cyan-500/10">
+                FECHAR CANAL
+            </button>
+        </div>
+    </div>
+
+    <!-- Cabeçalho de Navegação Superior -->
+    <header class="absolute top-6 left-8 right-8 z-30 flex justify-between items-center pointer-events-none">
+        <div class="flex items-center space-x-4 pointer-events-auto">
+            <div onclick="toggleSidebar()" class="cursor-pointer group flex items-center space-x-3">
+                <span class="text-3xl font-black italic tracking-tighter text-white font-rajdhani transition group-hover:text-cyan-400">LOGO</span>
+                <span class="text-[9px] font-rajdhani tracking-widest text-zinc-500 border border-zinc-800 px-2 py-0.5 rounded bg-zinc-950/60 backdrop-blur-sm">SYS_v2.6</span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4 pointer-events-auto">
+            <div class="hidden md:flex flex-col text-right">
+                <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">Menu de Navegação</span>
+                <span class="text-[11px] font-semibold text-zinc-300 font-rajdhani">DUPLO CLIQUE / ENTER PARA ENTRAR | <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-[10px] text-cyan-400">ESC</kbd> MENU</span>
+            </div>
+            <button onclick="toggleSidebar()" class="group flex h-11 w-11 items-center justify-center rounded-full bg-zinc-900/80 border border-zinc-800 hover:border-cyan-400 text-white transition-all duration-300 shadow-lg hover:shadow-cyan-500/10 backdrop-blur-sm">
+                <svg id="menu-btn-icon" class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-                <h3 class="font-display text-lg text-white uppercase">CONEXÃO CONCLUÍDA</h3>
-                <p class="text-xs text-gray-400 max-w-md mx-auto">Sua transmissão do WhatsApp foi iniciada! Caso a página não tenha aberto automaticamente, clique abaixo para abrir.</p>
-                <div class="flex flex-col gap-2 justify-center items-center">
-                  <a id="whatsapp-direct-link" href="#" target="_blank" class="px-4 py-2 rounded-lg bg-accent text-black font-bold text-xs uppercase accent-bg-color">Iniciar Chat Manualmente ↗</a>
-                  <button onclick="resetContactForm()" class="text-xs text-white underline hover:text-accent font-mono tracking-wider transition-colors accent-hover-text-color">Enviar outra mensagem</button>
-                </div>
-              </div>
+            </button>
+        </div>
+    </header>
 
-              <!-- Informação de Contato -->
-              <div class="pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between text-xs font-mono text-gray-500 gap-4">
-                <div>
-                  <span class="text-gray-400 font-bold block">// CANAL DIRETO</span>
-                  <span>Disponível via Formulário WhatsApp</span>
+    <!-- Contentor dos Painéis Diagonais de Navegação Base -->
+    <main id="main-accordion" class="flex-1 h-full relative overflow-hidden flex bg-black transition-all duration-700">
+        <!-- Grelha de design industrial em segundo plano -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f293708_1px,transparent_1px),linear-gradient(to_bottom,#1f293708_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
+
+        <!-- Estrutura Principal dos Acordeões (116% de largura para compensar a inclinação de -18deg) -->
+        <div class="skew-container w-[116%] -ml-[8%] h-full flex flex-row">
+            
+            <!-- FAIXA 01: BIOGRAPHY (Otimização: onmouseenter foca, onclick entra) -->
+            <section id="panel-1" onmouseenter="focusPanel(1)" onclick="enterSection(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
+                <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-950 via-transparent to-transparent"></div>
                 </div>
-                <div>
-                  <span class="text-gray-400 font-bold block">// AMBIENTE DIGITAL</span>
-                  <span>Victor H. Souza @ Delta-1</span>
+                <!-- Barra de destaque ciano dinâmica controlada por JS -->
+                <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <div class="flex items-center justify-between mt-12">
+                        <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">01</span>
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">SOBRE MIM</span>
+                    </div>
+
+                    <div class="panel-info-container flex flex-col justify-end h-3/4">
+                        <h3 class="panel-vertical-title text-xl font-bold tracking-widest text-zinc-400 font-rajdhani uppercase transition-colors duration-300 group-hover:text-white">
+                            BIOGRAPHY
+                        </h3>
+                        <p class="text-[10px] text-zinc-500 font-rajdhani mt-1 uppercase tracking-widest group-hover:text-cyan-400 transition">Clique para entrar</p>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </section>
+            </section>
+
+            <!-- FAIXA 02: EXPERIENCE (Otimização: onmouseenter foca, onclick entra) -->
+            <section id="panel-2" onmouseenter="focusPanel(2)" onclick="enterSection(2)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
+                <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
+                    <div class="absolute inset-0 bg-gradient-to-br from-zinc-800 via-transparent to-transparent"></div>
+                </div>
+                <!-- Barra de destaque ciano dinâmica controlada por JS -->
+                <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <div class="flex items-center justify-between mt-12">
+                        <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">02</span>
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">TECNOLOGIAS</span>
+                    </div>
+
+                    <div class="panel-info-container flex flex-col justify-end h-3/4">
+                        <h3 class="panel-vertical-title text-xl font-bold tracking-widest text-zinc-400 font-rajdhani uppercase transition-colors duration-300 group-hover:text-white">
+                            EXPERIENCE
+                        </h3>
+                        <p class="text-[10px] text-zinc-500 font-rajdhani mt-1 uppercase tracking-widest group-hover:text-cyan-400 transition">Clique para entrar</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAIXA 03: PROJECTS (Otimização: onmouseenter foca, onclick entra) -->
+            <section id="panel-3" onmouseenter="focusPanel(3)" onclick="enterSection(3)" class="stripe-panel flex-[2.2] h-full border-r border-zinc-900/60 bg-[#15181c] relative overflow-hidden cursor-pointer group active-stripe">
+                <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/10 via-transparent to-transparent pointer-events-none"></div>
+                <!-- Inicia visível porque Projects começa ativo por defeito -->
+                <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-100 transition-opacity duration-300"></div>
+
+                <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <div class="flex items-center justify-between mt-12">
+                        <span class="text-3xl font-bold text-cyan-400 font-rajdhani">03</span>
+                        <span class="text-[9px] uppercase tracking-widest text-cyan-400 font-rajdhani font-bold">PORTFÓLIO DE PROJETOS</span>
+                    </div>
+
+                    <div class="panel-info-container flex flex-col justify-end h-3/4">
+                        <h3 class="panel-vertical-title text-xl font-bold tracking-widest text-cyan-400 font-rajdhani uppercase">
+                            PROJECTS
+                        </h3>
+                        <p class="text-[10px] text-cyan-400 font-rajdhani mt-1 uppercase tracking-widest font-semibold">Clique para abrir a prateleira</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAIXA 04: THE LAB (Otimização: onmouseenter foca, onclick entra) -->
+            <section id="panel-4" onmouseenter="focusPanel(4)" onclick="enterSection(4)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#0d0e10] relative overflow-hidden cursor-pointer group">
+                <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-950 via-transparent to-transparent"></div>
+                </div>
+                <!-- Barra de destaque ciano dinâmica controlada por JS -->
+                <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <div class="flex items-center justify-between mt-12">
+                        <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">04</span>
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">INTERATIVOS</span>
+                    </div>
+
+                    <div class="panel-info-container flex flex-col justify-end h-3/4">
+                        <h3 class="panel-vertical-title text-xl font-bold tracking-widest text-zinc-400 font-rajdhani uppercase transition-colors duration-300 group-hover:text-white">
+                            THE LAB
+                        </h3>
+                        <p class="text-[10px] text-zinc-500 font-rajdhani mt-1 uppercase tracking-widest group-hover:text-cyan-400 transition">Clique para entrar</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAIXA 05: CONTACT (Otimização: onmouseenter foca, onclick entra) -->
+            <section id="panel-5" onmouseenter="focusPanel(5)" onclick="enterSection(5)" class="stripe-panel flex-1 h-full bg-[#121316] relative overflow-hidden cursor-pointer group">
+                <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
+                    <div class="absolute inset-0 bg-gradient-to-br from-zinc-900 via-transparent to-transparent"></div>
+                </div>
+                <!-- Barra de destaque ciano dinâmica controlada por JS -->
+                <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <div class="flex items-center justify-between mt-12">
+                        <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">05</span>
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">CONTACTAR</span>
+                    </div>
+
+                    <div class="panel-info-container flex flex-col justify-end h-3/4">
+                        <h3 class="panel-vertical-title text-xl font-bold tracking-widest text-zinc-400 font-rajdhani uppercase transition-colors duration-300 group-hover:text-white">
+                            CONTACT
+                        </h3>
+                        <p class="text-[10px] text-zinc-500 font-rajdhani mt-1 uppercase tracking-widest group-hover:text-cyan-400 transition">Clique para entrar</p>
+                    </div>
+                </div>
+            </section>
 
         </div>
+    </main>
 
-      </div>
-
-    </div>
-  </main>
-
-  <!-- MAC OS / FIGMA DOCK DE NAVEGAÇÃO FLUTUANTE (BOTTOM CENTER) -->
-  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl mac-dock flex items-center justify-around gap-1.5 w-[92%] max-w-sm md:max-w-md md:justify-center md:gap-2">
-    <!-- DNA Button (Escondido no Celular / Visível apenas no Desktop) -->
-    <button onclick="switchTab('about')" id="btn-about" class="hidden md:block tab-btn dock-item px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-white bg-accent/10 accent-tab-active" title="Acessar DNA">
-      DNA
-    </button>
-    <div class="hidden md:block h-4 w-[1px] bg-white/10"></div>
-    
-    <button onclick="switchTab('work')" id="btn-work" class="tab-btn dock-item px-3 py-2 md:px-4 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white flex-1 md:flex-initial text-center" title="Projetos">
-      PROJETOS
-    </button>
-    <div class="h-4 w-[1px] bg-white/10"></div>
-    
-    <button onclick="switchTab('skills')" id="btn-skills" class="tab-btn dock-item px-3 py-2 md:px-4 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white flex-1 md:flex-initial text-center" title="Habilidades">
-      SKILLS
-    </button>
-    <div class="h-4 w-[1px] bg-white/10"></div>
-    
-    <button onclick="switchTab('contact')" id="btn-contact" class="tab-btn dock-item px-3 py-2 md:px-4 rounded-xl text-xs font-mono uppercase tracking-widest font-bold text-gray-400 hover:text-white flex-1 md:flex-initial text-center" title="Contato">
-      CONTATO
-    </button>
-  </div>
-
-  <!-- MODAL DE DETALHES DO PROJETO -->
-  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-filter backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
-    <div class="glass-card max-w-2xl w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl scale-95 transition-transform duration-300" id="project-modal-content">
-      
-      <div class="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-        <div>
-          <span id="modal-category" class="font-mono text-[10px] uppercase text-accent accent-text-color tracking-widest">[ Direção ]</span>
-          <h3 id="modal-title" class="font-display text-2xl text-white uppercase mt-1">PROJETO</h3>
-        </div>
-        <button onclick="closeProjectModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center transition-all duration-200" title="Fechar">
-          ✕
+    <!-- SECÇÕES EXPANDIDAS DE ECRÃ INTEIRO (Estilo de Alto Impacto para cada aba) -->
+    <div id="fullview-container" class="absolute inset-0 z-30 pointer-events-none opacity-0 transform translate-y-8 scale-[0.98] transition-all duration-700 flex flex-col justify-center items-center p-8 md:p-24 bg-[#08090b]">
+        
+        <!-- Botão Voltar para o Acordeão Principal -->
+        <button onclick="exitFullScreen()" class="absolute top-24 right-8 md:right-16 z-50 group flex items-center space-x-2 bg-zinc-900/90 border border-zinc-800 hover:border-cyan-400 px-4 py-2 rounded-full text-white text-xs font-rajdhani tracking-widest uppercase transition shadow-lg backdrop-blur">
+            <span>&larr; RETORNAR</span>
         </button>
-      </div>
 
-      <div class="p-6 space-y-6">
-        <!-- Frame com o fallback do projeto aberto em tamanho maior -->
-        <div class="h-56 bg-black/40 rounded-xl flex items-center justify-center border border-white/5 relative overflow-hidden group">
-          <div id="modal-project-svg-fallback" class="absolute inset-0 bg-gradient-to-tr from-accent-glow to-transparent opacity-50"></div>
-          <svg id="modal-project-icon-fallback" class="w-12 h-12 text-accent/20 animate-pulse accent-text-color-20 relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-          </svg>
-          <span class="absolute bottom-3 right-3 font-mono text-[9px] text-gray-500">// Vetores Ativos</span>
+        <!-- CONTEÚDO SELECIONADO: BIOGRAPHY (ID: 1) -->
+        <div id="fv-content-1" class="hidden w-full max-w-5xl flex flex-col space-y-6">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 01 // BIOGRAFIA ]</span>
+            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">ENGENHARIA E DESIGN DIGITAL</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+                    <p>
+                        Sou designer de interações digitais e arquiteto de software localizado em Portugal. Foco a minha atividade no desenvolvimento de experiências Web ricas, combinando estéticas inovadoras com otimizações técnicas robustas.
+                    </p>
+                    <p>
+                        Acredito que o design de alta fidelidade não deve apenas ser apelativo visualmente, mas sim contar uma história mecânica de facilidade de utilização e rapidez tecnológica.
+                    </p>
+                </div>
+                <!-- Mini Cronograma Estilizado -->
+                <div class="bg-zinc-950/60 p-6 rounded-lg border border-zinc-900 space-y-4">
+                    <h3 class="text-white font-bold font-rajdhani text-lg uppercase border-b border-zinc-900 pb-2 text-cyan-400">HISTORIAL DE ATIVIDADE</h3>
+                    <div class="space-y-3">
+                        <div class="border-l-2 border-cyan-400 pl-4">
+                            <span class="text-[10px] text-zinc-500 font-rajdhani">2024 - PRESENTE</span>
+                            <h4 class="text-xs font-bold text-white">Desenvolvedor e Designer Criativo Senior</h4>
+                        </div>
+                        <div class="border-l-2 border-zinc-800 pl-4">
+                            <span class="text-[10px] text-zinc-500 font-rajdhani">2021 - 2023</span>
+                            <h4 class="text-xs font-bold text-white">Arquiteto Front-End na CPUSIS Corp</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="space-y-4">
-          <div class="space-y-1">
-            <span class="text-[10px] font-mono text-gray-500 uppercase block">// Resumo do Desenvolvimento</span>
-            <p id="modal-description" class="text-sm text-gray-300 leading-relaxed font-light">
-              Detalhamento técnico do projeto do Victor H. Souza.
+        <!-- CONTEÚDO SELECIONADO: EXPERIENCE (ID: 2) -->
+        <div id="fv-content-2" class="hidden w-full max-w-5xl flex flex-col space-y-6">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 02 // CAPACIDADES ]</span>
+            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">TECNOLOGIAS DE PONTA</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                <!-- Competência 1 -->
+                <div class="bg-zinc-950 p-6 border border-zinc-900 rounded space-y-3">
+                    <span class="text-cyan-400 font-rajdhani text-2xl font-bold">01</span>
+                    <h3 class="text-white font-bold uppercase text-sm">Aplicações Reativas</h3>
+                    <p class="text-xs text-zinc-500 leading-relaxed">Arquitetura modular avançada focada em interações fluidas do utilizador e tempos de carregamento instantâneos.</p>
+                </div>
+                <!-- Competência 2 -->
+                <div class="bg-zinc-950 p-6 border border-zinc-900 rounded space-y-3">
+                    <span class="text-cyan-400 font-rajdhani text-2xl font-bold">02</span>
+                    <h3 class="text-white font-bold uppercase text-sm">Direção de Arte / IA</h3>
+                    <p class="text-xs text-zinc-500 leading-relaxed">Criação de marcas e identidades visuais personalizadas, geradas e otimizadas com modelos inteligentes.</p>
+                </div>
+                <!-- Competência 3 -->
+                <div class="bg-zinc-950 p-6 border border-zinc-900 rounded space-y-3">
+                    <span class="text-cyan-400 font-rajdhani text-2xl font-bold">03</span>
+                    <h3 class="text-white font-bold uppercase text-sm">WebGL & Motion</h3>
+                    <p class="text-xs text-zinc-500 leading-relaxed">Estruturação de animações complexas em 3D, efeitos de iluminação em tempo real utilizando Three.js ou canvas puro.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO SELECIONADO: PROJECTS (ID: 3) com a magnífica prateleira Kurosawa -->
+        <div id="fv-content-3" class="hidden w-full max-w-5xl flex flex-col space-y-4">
+            <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold">[ SECÇÃO 03 // PRATELEIRA DE PROJETOS ]</span>
+            <h2 class="text-2xl md:text-4xl font-black italic text-white tracking-tight font-rajdhani">GABINETE KUROSAWA VHS</h2>
+            
+            <!-- A Prateleira VHS Kurosawa -->
+            <div class="vhs-shelf" id="vhs-shelf-container">
+                <!-- Projeto 1 (Ativo por defeito) -->
+                <div class="vhs-tape active-tape" data-proj-title="Sistema de Formação CPUSIS" data-proj-desc="Plataforma de alta fidelidade para gestão de guiões de suporte, roteiros de formação interativos e base de dados administrativa corporativa." onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">TREINO CPUSIS</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=CPUSIS')">
+                        <span class="text-[9px] text-cyan-400 font-rajdhani font-semibold">SYS_V2.6</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">CPU_SIS TRAINING</div>
+                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 01</span>
+                    </div>
+                </div>
+
+                <!-- Projeto 2 -->
+                <div class="vhs-tape" data-proj-title="Conceitos Visuais & Direção de IA" data-proj-desc="Geração, refinamento e direção estética para marcas contemporâneas através de Inteligência Artificial generativa avançada." onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">ARTIFICIAL INTEL</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=AI+Design')">
+                        <span class="text-[9px] text-pink-500 font-rajdhani font-semibold">GEN_AI</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">ARTE INTELIGENTE</div>
+                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 02</span>
+                    </div>
+                </div>
+
+                <!-- Projeto 3 -->
+                <div class="vhs-tape" data-proj-title="Gamificação Universitária: Biologia" data-proj-desc="Apresentação gamificada interativa sobre Núcleo Celular e Gametogénese desenvolvida para ensino académico dinâmico." onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">ACAD_BIOLOGY</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=BIOLOGY')">
+                        <span class="text-[9px] text-green-400 font-rajdhani font-semibold">ACAD_BIO</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">NÚCLEO CELULAR</div>
+                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 03</span>
+                    </div>
+                </div>
+
+                <!-- Projeto 4 -->
+                <div class="vhs-tape" data-proj-title="Montagens & Vídeo Design Cyberpunk" data-proj-desc="Criação, edição e efeitos estilizados para vídeos de ficção científica noir integrando áudio imersivo e narrativa estética visual." onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">CYBERPUNK EDITS</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=CYBERPUNK')">
+                        <span class="text-[9px] text-red-500 font-rajdhani font-semibold">EDITS_NOIR</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">CYBERPUNK SHORTS</div>
+                        <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 04</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dados Descritivos Dinâmicos da fita ativa -->
+            <div class="border-t border-zinc-900 pt-4 mt-2">
+                <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold block mb-1" id="project-tag">CASO DE ESTUDO</span>
+                <h4 class="text-xl font-bold text-white mb-2" id="project-title">Sistema de Formação CPUSIS</h4>
+                <p class="text-xs text-zinc-400 leading-relaxed max-w-xl" id="project-desc">
+                    Plataforma de alta fidelidade para gestão de guiões de suporte, roteiros de formação interativos e base de dados administrativa corporativa.
+                </p>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO SELECIONADO: THE LAB (ID: 4) com interações do utilizador -->
+        <div id="fv-content-4" class="hidden w-full max-w-5xl flex flex-col space-y-6">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 04 // EXPERIMENTOS INTERATIVOS ]</span>
+            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">CONCEITOS EM EXECUÇÃO</h2>
+            
+            <p class="text-xs text-zinc-400 max-w-lg leading-relaxed">
+                Este laboratório aloja algoritmos rápidos e interações ativas em tempo real. Pode interagir diretamente com a densidade e a velocidade do código Matrix que vê no fundo!
             </p>
-          </div>
 
-          <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-            <div>
-              <span class="text-[10px] font-mono text-gray-500 uppercase block">// Métrica ou Objetivo</span>
-              <p id="modal-metric" class="text-xs text-white font-semibold mt-1">Status Ativo</p>
+            <div class="bg-zinc-950 p-6 rounded-lg border border-zinc-900 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Painel de Controlo da Anão -->
+                <div class="space-y-4">
+                    <h3 class="text-white font-rajdhani font-bold text-md tracking-wider">TERMINAL DE CONTROLO MATRIX</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-[11px] text-zinc-500 block mb-1">VELOCIDADE DOS DADOS (FPS)</label>
+                            <input id="matrix-speed-range" type="range" min="10" max="60" value="30" oninput="updateMatrixConfig()" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-zinc-500 block mb-1">DENSIDADE DA CHUVA</label>
+                            <input id="matrix-density-range" type="range" min="10" max="100" value="50" oninput="updateMatrixConfig()" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-center space-y-2 border-l border-zinc-900 pl-8">
+                    <span class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase">AMBIENTE INTEGRADO</span>
+                    <h4 class="text-white font-bold text-sm">Visualizer v2.0</h4>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed">Os caracteres da chuva utilizam os ideogramas tradicionais para emular o design original carregado.</p>
+                </div>
             </div>
-            <div>
-              <span class="text-[10px] font-mono text-gray-500 uppercase block">// Tecnologia</span>
-              <p class="text-xs text-white font-semibold mt-1">Modern JS, IA & APIs</p>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="p-6 border-t border-white/5 bg-black/20 flex justify-end gap-3">
-        <button onclick="closeProjectModal()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-white transition-colors duration-200">
-          FECHAR JANELA
-        </button>
-        <a id="modal-action-btn" href="#" target="_blank" class="px-4 py-2 rounded-lg bg-accent text-black font-semibold text-xs uppercase tracking-wider transition-all duration-200 accent-bg-color hover:brightness-110 flex items-center gap-1">
-          ACESSAR APLICAÇÃO ↗
-        </a>
-      </div>
+        <!-- CONTEÚDO SELECIONADO: CONTACT (ID: 5) com formulário industrial -->
+        <div id="fv-content-5" class="hidden w-full max-w-2xl flex flex-col space-y-6">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 05 // TERMINAL DE MENSAGEM ]</span>
+            <h2 class="text-4xl md:text-5xl font-black italic text-white tracking-tight font-rajdhani">INICIAR CONEXÃO</h2>
+            
+            <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase block mb-1">DESIGNAÇÃO / NOME</label>
+                        <input type="text" required class="w-full bg-zinc-950 border border-zinc-800 focus:border-cyan-400 focus:outline-none p-3 text-xs text-white rounded">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase block mb-1">ENDEREÇO ELETRÓNICO</label>
+                        <input type="email" required class="w-full bg-zinc-950 border border-zinc-800 focus:border-cyan-400 focus:outline-none p-3 text-xs text-white rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase block mb-1">DETALHES DO PROJETO</label>
+                    <textarea rows="4" required class="w-full bg-zinc-950 border border-zinc-800 focus:border-cyan-400 focus:outline-none p-3 text-xs text-white rounded resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-cyan-400 hover:bg-cyan-500 text-black font-rajdhani font-bold tracking-widest text-xs uppercase py-3 transition rounded duration-300 shadow-lg shadow-cyan-500/10">
+                    ENVIAR TRANSMISSÃO
+                </button>
+            </form>
+        </div>
 
     </div>
-  </div>
 
-  <script>
-    // Configurações do Cursor Customizado em X - COMPLETAMENTE LOCKADO (ZERO DELAY)
-    const cursorContainer = document.getElementById('cursor-container');
+    <!-- Menu Lateral Curvado Oculto por Defeito (Ativação via ESC ou Botão) -->
+    <div id="curved-menu" class="curved-sidebar fixed inset-y-0 left-0 w-[420px] bg-[#08090a]/98 border-r border-zinc-800/40 z-50 flex flex-col justify-between p-12 transform -translate-x-full opacity-0">
+        
+        <div class="flex flex-col space-y-12">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-4xl font-black italic tracking-tighter text-white font-rajdhani">LOGO</h2>
+                    <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani block mt-1">SISTEMA INTEGRADO DE NAVEGAÇÃO</span>
+                </div>
+                
+                <button onclick="toggleSidebar()" class="h-9 w-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-red-400 text-zinc-400 hover:text-red-400 transition">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
 
-    // Movimentação direta sem cálculo de interpolação/easing no translate3d
-    document.addEventListener('mousemove', (e) => {
-      cursorContainer.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    });
+            <!-- Navegação Rápida -->
+            <ul class="space-y-6">
+                <li>
+                    <a href="#biography" onclick="handleMenuClick(1)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">RACE (BIOGRAPHY)</span>
+                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[01]</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#experience" onclick="handleMenuClick(2)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">CUSTOMIZE (EXPERIENCE)</span>
+                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[02]</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#projects" onclick="handleMenuClick(3)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">SETTINGS (PROJECTS)</span>
+                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[03]</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#lab" onclick="handleMenuClick(4)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-cyan-400 transition duration-300">
+                        <span class="text-2xl font-black tracking-widest text-zinc-400 group-hover:text-white font-rajdhani italic transition">MULTIPLAYER (THE LAB)</span>
+                        <span class="text-xs text-zinc-600 group-hover:text-cyan-400 transition">[04]</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#quit" onclick="handleMenuClick(5)" class="group flex items-center justify-between py-2 border-b border-zinc-900 hover:border-red-400 transition duration-300">
+                        <span class="text-2xl font-black tracking-widest text-zinc-500 group-hover:text-red-500 font-rajdhani italic transition">QUIT (EXIT PORTFOLIO)</span>
+                        <span class="text-xs text-zinc-600 group-hover:text-red-400 transition">[05]</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-    // Eventos de estado do cursor para hover nos elementos clicáveis
-    const updateClickableListeners = () => {
-      const clickables = document.querySelectorAll('a, button, select, input, textarea, [role="button"]');
-      clickables.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          document.body.classList.add('hovering-clickable');
-        });
-        el.addEventListener('mouseleave', () => {
-          document.body.classList.remove('hovering-clickable');
-        });
-      });
-    };
+        <!-- Rodapé do Menu Lateral: News Feed (Conforme Wireframe original) -->
+        <div class="space-y-4">
+            <h4 class="text-[10px] font-rajdhani tracking-widest text-zinc-500 uppercase border-b border-zinc-900 pb-1">NEWS FEED // ATUALIZAÇÕES</h4>
+            <div class="grid grid-cols-2 gap-4">
+                
+                <!-- Notícia 1 -->
+                <div class="tilted-news-card bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 p-4 cursor-pointer">
+                    <div class="tilted-news-card-inner">
+                        <span class="text-[9px] text-cyan-400 font-rajdhani block mb-1">JUNHO 2026</span>
+                        <h5 class="text-xs font-bold text-white line-clamp-1">ENGINE ATUALIZADA</h5>
+                        <p class="text-[10px] text-zinc-500 mt-1 line-clamp-2">Navegação por Scroll inteligente integrada.</p>
+                    </div>
+                </div>
 
-    document.addEventListener('mousedown', () => document.body.classList.add('clicking'));
-    document.addEventListener('mouseup', () => document.body.classList.remove('clicking'));
-    updateClickableListeners();
+                <!-- Notícia 2 -->
+                <div class="tilted-news-card bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 p-4 cursor-pointer">
+                    <div class="tilted-news-card-inner">
+                        <span class="text-[9px] text-cyan-400 font-rajdhani block mb-1">MAIO 2026</span>
+                        <h5 class="text-xs font-bold text-white line-clamp-1">MATRIX RAIN TRANSITION</h5>
+                        <p class="text-[10px] text-zinc-500 mt-1 line-clamp-2">Animação de transição baseada na queda de ideogramas.</p>
+                    </div>
+                </div>
 
-    // Estado Geral do Modo de Cores
-    let activeTabId = 'about';
+            </div>
+        </div>
 
-    // Cores específicas de cada aba para o modo padrão
-    const tabColors = {
-      about: '#06b6d4',   // DNA -> Cyan Tech
-      work: '#84cc16',    // Projetos -> Lime Neon
-      skills: '#ec4899',  // Habilidades -> Pink Cyber
-      contact: '#f59e0b'  // Contato -> Gold Amber
-    };
+    </div>
 
-    // Altera cores de destaque dinamicamente
-    function setThemeColor(hexColor) {
-      document.documentElement.style.setProperty('--accent-color', hexColor);
-      
-      const activeTabs = document.querySelectorAll('.accent-tab-active');
-      activeTabs.forEach(el => {
-        el.style.backgroundColor = hexColor + '1A';
-        el.style.color = hexColor;
-      });
+    <!-- Notificação de Reprodução de Música Flutuante (Bottom-Right) -->
+    <div id="music-notification" class="fixed bottom-6 right-6 z-50 bg-[#0c0d0f]/95 border border-zinc-800/80 hover:border-cyan-400 px-4 py-3 rounded flex items-center space-x-4 shadow-2xl transition-all duration-500 translate-y-32 opacity-0 font-rajdhani">
+        <!-- Equalizador de Áudio Animado -->
+        <div class="flex items-end space-x-0.5 h-5 w-5 mb-0.5">
+            <span class="bg-cyan-400 w-1 rounded-t animate-[eq-bar-1_0.9s_infinite_ease-in-out]"></span>
+            <span class="bg-cyan-400 w-1 rounded-t animate-[eq-bar-2_0.7s_infinite_ease-in-out]"></span>
+            <span class="bg-cyan-400 w-1 rounded-t animate-[eq-bar-3_1.1s_infinite_ease-in-out]"></span>
+        </div>
+        <div class="flex flex-col select-none">
+            <span class="text-[9px] text-cyan-400 tracking-widest uppercase font-black">TRANSMISSÃO AUDIOATIVA</span>
+            <span class="text-[12px] font-bold text-white uppercase line-clamp-1 tracking-wide">NEO_TOKYO_AMBIENT.MP3</span>
+        </div>
+    </div>
 
-      const dotColor = document.querySelector('.accent-dot-color');
-      if (dotColor) dotColor.style.backgroundColor = hexColor;
+    <script>
+        let sidebarOpen = false;
+        let focusedId = 3; // Projetos ativo por defeito no início
+        let isFullScreen = false;
 
-      const bgDots = document.querySelectorAll('.accent-bg-color');
-      bgDots.forEach(el => el.style.backgroundColor = hexColor);
+        // --- SISTEMA DE INICIALIZAÇÃO SEGURA DO AUDIO CONTEXT ---
+        let audioCtx = null;
+        let globalNoiseBuffer = null;
 
-      const textColors = document.querySelectorAll('.accent-text-color');
-      textColors.forEach(el => el.style.color = hexColor);
-
-      const borderColors = document.querySelectorAll('.accent-border-color');
-      borderColors.forEach(el => el.style.borderColor = hexColor);
-
-      const glow1 = document.getElementById('ambient-glow-1');
-      const glow2 = document.getElementById('ambient-glow-2');
-      if (glow1) glow1.style.backgroundColor = hexColor + '26';
-      if (glow2) glow2.style.backgroundColor = hexColor + '1A';
-
-      const filterActive = document.querySelector('.accent-active-filter');
-      if (filterActive) {
-        filterActive.style.backgroundColor = hexColor;
-      }
-    }
-
-    // Inicialização padrão com o Ciano ou Verde dependendo do dispositivo
-    window.onload = function() {
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
-        // Celular inicia direto nos Projetos (Verde Limão)
-        switchTab('work');
-      } else {
-        // Desktop inicia no DNA (Ciano)
-        switchTab('about');
-      }
-    };
-
-    // Alternância rápida de Abas e Cores Automáticas por Seção (Estilo Figma/Mac)
-    function switchTab(tabId) {
-      activeTabId = tabId;
-
-      const panes = document.querySelectorAll('.tab-pane');
-      panes.forEach(pane => {
-        pane.classList.add('hidden');
-        pane.classList.remove('block');
-      });
-
-      const activePane = document.getElementById(`tab-content-${tabId}`);
-      if (activePane) {
-        activePane.classList.remove('hidden');
-        activePane.classList.add('block');
-      }
-
-      const buttons = document.querySelectorAll('.tab-btn');
-      buttons.forEach(btn => {
-        btn.classList.remove('text-white', 'bg-accent/10', 'accent-tab-active');
-        btn.classList.add('text-gray-400');
-        btn.style.backgroundColor = 'transparent';
-        btn.style.color = '';
-      });
-
-      const activeBtn = document.getElementById(`btn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.add('text-white', 'bg-accent/10', 'accent-tab-active');
-        activeBtn.classList.remove('text-gray-400');
-      }
-
-      // Troca automática de cor ao alterar abas
-      if (tabColors[tabId]) {
-        setThemeColor(tabColors[tabId]);
-      }
-    }
-
-    // Filtros Rápidos de Portfólio
-    function filterPortfolio(category) {
-      const items = document.querySelectorAll('.portfolio-item');
-      items.forEach(item => {
-        if (category === 'all' || item.getAttribute('data-category') === category) {
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioCtx;
         }
-      });
 
-      const filterBtns = document.querySelectorAll('.port-filter-btn');
-      const currentAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#06b6d4';
-      
-      filterBtns.forEach(btn => {
-        btn.classList.remove('bg-accent', 'text-black', 'font-semibold', 'accent-bg-color', 'accent-active-filter');
-        btn.classList.add('bg-white/5', 'text-gray-400', 'hover:text-white');
-        btn.style.backgroundColor = '';
-        btn.style.color = '';
-      });
+        // Buffer global de Ruído Branco
+        function getNoiseBuffer() {
+            const ctx = getAudioContext();
+            if (!globalNoiseBuffer) {
+                const sampleRate = ctx.sampleRate;
+                const bufferSize = sampleRate * 1.5;
+                globalNoiseBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
+                const data = globalNoiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2.0 - 1.0;
+                }
+            }
+            return globalNoiseBuffer;
+        }
 
-      const activeBtn = document.querySelector(`[data-filter="${category}"]`);
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-white/5', 'text-gray-400', 'hover:text-white');
-        activeBtn.classList.add('bg-accent', 'text-black', 'font-semibold', 'accent-bg-color', 'accent-active-filter');
-        activeBtn.style.backgroundColor = currentAccent;
-        activeBtn.style.color = '#000000';
-      }
-    }
+        // 1. Som de Cursor do PS2 (O "tack" tátil e ressonante do menu clássico)
+        function playPS2HoverSound() {
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const lp = ctx.createBiquadFilter();
 
-    // Modal de Detalhes com Suporte a Link de Aplicação Externo
-    const modal = document.getElementById('project-modal');
-    const modalContent = document.getElementById('project-modal-content');
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(340, now);
+                osc.frequency.exponentialRampToValueAtTime(70, now + 0.04);
 
-    function openProjectModal(title, category, desc, metric, appUrl) {
-      document.getElementById('modal-title').innerText = title;
-      document.getElementById('modal-category').innerText = `[ ${category} ]`;
-      document.getElementById('modal-description').innerText = desc;
-      document.getElementById('modal-metric').innerText = metric;
+                lp.type = "lowpass";
+                lp.frequency.setValueAtTime(450, now);
 
-      const actionBtn = document.getElementById('modal-action-btn');
-      if (appUrl && appUrl !== '#') {
-        actionBtn.href = appUrl;
-        actionBtn.style.display = 'inline-flex';
-      } else {
-        actionBtn.style.display = 'none';
-      }
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
 
-      modal.classList.remove('hidden');
-      setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        modalContent.classList.remove('scale-95');
-      }, 50);
-    }
+                osc.connect(lp);
+                lp.connect(gain);
+                gain.connect(ctx.destination);
 
-    function closeProjectModal() {
-      modal.classList.add('opacity-0');
-      modalContent.classList.add('scale-95');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 300);
-    }
+                osc.start(now);
+                osc.stop(now + 0.042);
+            } catch (e) {}
+        }
 
-    // Gerenciar Envio de Formulário e Integração Direta com o WhatsApp
-    function handleFormSubmit(event) {
-      event.preventDefault();
-      
-      const form = document.getElementById('contact-form');
-      const successBox = document.getElementById('form-success-box');
+        // 2. Som de Seleção/Enter: Som clássico de confirmação de leitura com "thock" mecânico
+        function playPS2SelectSound() {
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const now = ctx.currentTime;
 
-      // Obter informações inseridas
-      const name = document.getElementById('form-name').value;
-      const email = document.getElementById('form-email').value;
-      const objective = document.getElementById('form-objective').value;
-      const message = document.getElementById('form-message').value;
+                // Camada do sino de cristal
+                const bellOsc = ctx.createOscillator();
+                const bellGain = ctx.createGain();
+                bellOsc.type = "sine";
+                bellOsc.frequency.setValueAtTime(987.77, now); // Si5
+                bellOsc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.18); // Mi6
 
-      // Montar mensagem para o WhatsApp com formatação básica
-      const textMessage = `Olá Victor! Me chamo *${name}* (${email}).%0A%0AEntro em contato com foco em: *${objective}*%0A%0A*Resumo do briefing:*%0A${message}`;
-      
-      // WhatsApp Link (Victor's Phone: +55 19 98976-5398)
-      const whatsappURL = `https://api.whatsapp.com/send?phone=5519989765398&text=${encodeURIComponent(textMessage)}`;
+                bellGain.gain.setValueAtTime(0.045, now);
+                bellGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
 
-      // Atualizar link de fallback no card de sucesso
-      document.getElementById('whatsapp-direct-link').href = whatsappURL;
+                bellOsc.connect(bellGain);
+                bellGain.connect(ctx.destination);
+                bellOsc.start(now);
+                bellOsc.stop(now + 0.35);
 
-      form.classList.add('opacity-30');
-      form.style.pointerEvents = 'none';
+                // Camada do Impacto Subgrave Quente (Mechanical Switch thock)
+                const bassOsc = ctx.createOscillator();
+                const bassGain = ctx.createGain();
+                bassOsc.type = "triangle";
+                bassOsc.frequency.setValueAtTime(110, now);
+                bassOsc.frequency.exponentialRampToValueAtTime(35, now + 0.15);
 
-      // Disparar redirecionamento automático
-      window.open(whatsappURL, '_blank');
+                bassGain.gain.setValueAtTime(0.18, now);
+                bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
 
-      setTimeout(() => {
-        form.classList.add('hidden');
-        form.classList.remove('opacity-30');
-        successBox.classList.remove('hidden');
-        updateClickableListeners();
-      }, 800);
-    }
+                bassOsc.connect(bassGain);
+                bassGain.connect(ctx.destination);
+                bassOsc.start(now);
+                bassOsc.stop(now + 0.16);
+            } catch(e) {}
+        }
 
-    function resetContactForm() {
-      const form = document.getElementById('contact-form');
-      const successBox = document.getElementById('form-success-box');
+        // 3. Som de Cancelar / Menu Close (Sweep descendente sutil)
+        function playPS2CancelSound() {
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
 
-      form.reset();
-      form.classList.remove('hidden');
-      form.style.pointerEvents = 'auto';
-      successBox.classList.add('hidden');
-      updateClickableListeners();
-    }
-  </script>
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(120, now + 0.22);
+
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch(e){}
+        }
+
+        // --- SISTEMA DE INICIALIZAÇÃO DE PIANO MAJESTOSO (PLAYSTATION COLD BOOT) ---
+        function playPS2Startup() {
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const now = ctx.currentTime;
+
+                // 1. Drone Subgrave Quente (Base de baixa frequência profunda)
+                const subOsc = ctx.createOscillator();
+                const subGain = ctx.createGain();
+                subOsc.type = "sine";
+                subOsc.frequency.setValueAtTime(65.41, now); // C2
+                subGain.gain.setValueAtTime(0.24, now);
+                subGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.3);
+                subOsc.connect(subGain);
+                subGain.connect(ctx.destination);
+                subOsc.start(now);
+                subOsc.stop(now + 2.4);
+
+                // 2. Acorde de Piano-Synth Majestoso (C-Major: C3, G3, C4, E4, G4, C5)
+                const chordFreqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25];
+                chordFreqs.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = index % 2 === 0 ? "triangle" : "sine";
+                    osc.frequency.setValueAtTime(freq, now);
+                    
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.3);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 2.4);
+                });
+
+                // 3. Sino de Cristal Superior (Ataque brilhante e cristalino da tecla)
+                const chimeOsc = ctx.createOscillator();
+                const chimeGain = ctx.createGain();
+                chimeOsc.type = "sine";
+                chimeOsc.frequency.setValueAtTime(1046.50, now); // C6
+                chimeGain.gain.setValueAtTime(0.06, now);
+                chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+                chimeOsc.connect(chimeGain);
+                chimeGain.connect(ctx.destination);
+                chimeOsc.start(now);
+                chimeOsc.stop(now + 0.9);
+
+                // 4. Brisa Atmosférica Sutil de Fundo
+                const noise = ctx.createBufferSource();
+                noise.buffer = getNoiseBuffer();
+                const noiseFilter = ctx.createBiquadFilter();
+                const noiseGain = ctx.createGain();
+                
+                noiseFilter.type = "lowpass";
+                noiseFilter.frequency.setValueAtTime(250, now);
+                noiseGain.gain.setValueAtTime(0.08, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.0);
+
+                noise.connect(noiseFilter);
+                noiseFilter.connect(noiseGain);
+                noiseGain.connect(ctx.destination);
+                noise.start(now);
+                noise.stop(now + 2.1);
+
+            } catch (error) {}
+        }
+
+        // 4. Som de Transição "Câmara Flash" Futurista (Sem Assobio prévio)
+        function playMatrixJackInSound() {
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const now = ctx.currentTime;
+
+                // Clique do obturador mecânico duplo instantâneo (ms 0)
+                const clickSource1 = ctx.createBufferSource();
+                clickSource1.buffer = getNoiseBuffer();
+                const filter1 = ctx.createBiquadFilter();
+                filter1.type = "bandpass";
+                filter1.frequency.setValueAtTime(2200, now);
+                filter1.Q.setValueAtTime(3, now);
+                const clickGain1 = ctx.createGain();
+                clickGain1.gain.setValueAtTime(0.06, now);
+                clickGain1.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+                clickSource1.connect(filter1);
+                filter1.connect(clickGain1);
+                clickGain1.connect(ctx.destination);
+                clickSource1.start(now);
+                clickSource1.stop(now + 0.03);
+
+                const clickSource2 = ctx.createBufferSource();
+                clickSource2.buffer = getNoiseBuffer();
+                const filter2 = ctx.createBiquadFilter();
+                filter2.type = "bandpass";
+                filter2.frequency.setValueAtTime(1600, now + 0.025);
+                filter2.Q.setValueAtTime(4, now);
+                const clickGain2 = ctx.createGain();
+                clickGain2.gain.setValueAtTime(0.05, now + 0.025);
+                clickGain2.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                clickSource2.connect(filter2);
+                filter2.connect(clickGain2);
+                clickGain2.connect(ctx.destination);
+                clickSource2.start(now + 0.025);
+                clickSource2.stop(now + 0.055);
+
+                // Expansão de ar / Dissipação Lowpass macia
+                const puffSource = ctx.createBufferSource();
+                puffSource.buffer = getNoiseBuffer();
+                const lpFilter = ctx.createBiquadFilter();
+                lpFilter.type = "lowpass";
+                lpFilter.frequency.setValueAtTime(280, now);
+                const puffGain = ctx.createGain();
+                puffGain.gain.setValueAtTime(0.14, now);
+                puffGain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                puffSource.connect(lpFilter);
+                lpFilter.connect(puffGain);
+                puffGain.connect(ctx.destination);
+                puffSource.start(now);
+                puffSource.stop(now + 0.32);
+
+            } catch (error) {}
+        }
+
+        // Som para transição interna simples do menu lateral (Suave)
+        function playMenuSound() {
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(750, now + 0.06);
+                
+                gain.gain.setValueAtTime(0.02, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.06);
+            } catch(e){}
+        }
+
+        // --- ANIMAÇÃO CANVAS: TORRES 3D ERGUE-SE DO PLAYSTATION ---
+        const bootCanvas = document.getElementById('ps2-canvas');
+        const bootCtx = bootCanvas.getContext('2d');
+        let bootAnimationId = null;
+        let towers = [];
+
+        function resizeBootCanvas() {
+            bootCanvas.width = window.innerWidth;
+            bootCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeBootCanvas);
+        resizeBootCanvas();
+
+        function initPS2Towers() {
+            towers = [];
+            const count = 45;
+            for (let i = 0; i < count; i++) {
+                towers.push({
+                    x: Math.random() * bootCanvas.width,
+                    y: bootCanvas.height + 100 + Math.random() * 200,
+                    z: 0.6 + Math.random() * 2.2,
+                    width: 15 + Math.random() * 30,
+                    height: 50 + Math.random() * 150,
+                    speed: 2.2 + Math.random() * 4.0,
+                    opacity: 0.12 + Math.random() * 0.45,
+                    color: Math.random() > 0.5 ? "rgba(255, 196, 0, " : "rgba(255, 140, 0, " // Azul e ciano originais do PS2
+                });
+            }
+        }
+        initPS2Towers();
+
+        function drawPS2Towers() {
+            bootCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            bootCtx.fillRect(0, 0, bootCanvas.width, bootCanvas.height);
+
+            towers.forEach(t => {
+                t.y -= t.speed * t.z;
+
+                bootCtx.fillStyle = `${t.color}${t.opacity})`;
+                bootCtx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+                
+                bootCtx.fillRect(t.x, t.y, t.width * t.z, t.height * t.z);
+                bootCtx.strokeRect(t.x, t.y, t.width * t.z, t.height * t.z);
+
+                if (t.y + t.height < -100) {
+                    t.y = bootCanvas.height + 100;
+                    t.x = Math.random() * bootCanvas.width;
+                }
+            });
+
+            bootAnimationId = requestAnimationFrame(drawPS2Towers);
+        }
+
+        // --- SISTEMA DE INICIALIZAÇÃO DO CONSOLE ---
+        function initiatePS2ConsoleBoot() {
+            // Desativa botão e dispara som do PS2 com piano majestoso
+            document.getElementById('press-start-btn').style.display = "none";
+            playPS2Startup();
+
+            // Ativa renderizador de torres
+            drawPS2Towers();
+
+            // Mostra o Logo "DELTS" rapidamente
+            setTimeout(() => {
+                document.getElementById('boot-logo-container').classList.remove('opacity-0', 'scale-95', 'translate-y-4');
+                document.getElementById('boot-logo-container').classList.add('opacity-100', 'scale-100', 'translate-y-0');
+            }, 300);
+
+            // Transição para o portfólio completo
+            setTimeout(() => {
+                cancelAnimationFrame(bootAnimationId);
+
+                // Dispara flash e oculta tela de boot
+                triggerDoubleInvertedFlash();
+                const bootScreen = document.getElementById('ps2-boot-screen');
+                bootScreen.style.opacity = "0";
+                bootScreen.style.pointerEvents = "none";
+
+                // Habilita display none completo após a transição para evitar bloqueios de cliques
+                setTimeout(() => {
+                    bootScreen.style.display = "none";
+                }, 700);
+
+                // Dá foco suave ao painel inicial Projects
+                focusPanel(3);
+            }, 2200); 
+        }
+
+        // --- DISPARADOR DO FLASH RETRO-INVERSOR DUPLO ---
+        function triggerDoubleInvertedFlash() {
+            const flashOverlay = document.getElementById('flash-overlay');
+            // Remove a classe se ela já existir para permitir reiniciar a animação
+            flashOverlay.classList.remove('trigger-screen-flash');
+            void flashOverlay.offsetWidth; // Força re-flow do DOM
+            flashOverlay.classList.add('trigger-screen-flash');
+        }
+
+        // --- EXIBIR NOTIFICAÇÃO DE MÚSICA NO CANTO INFERIOR ---
+        let musicNotificationTimeout;
+        function showMusicNotification() {
+            const notification = document.getElementById('music-notification');
+            
+            // Cancela ocultamento anterior se houver
+            clearTimeout(musicNotificationTimeout);
+            
+            notification.classList.remove('translate-y-32', 'opacity-0');
+            notification.classList.add('translate-y-0', 'opacity-100');
+            
+            // Oculta após 6 segundos
+            musicNotificationTimeout = setTimeout(() => {
+                notification.classList.remove('translate-y-0', 'opacity-100');
+                notification.classList.add('translate-y-32', 'opacity-0');
+            }, 6000);
+        }
+
+        // --- ENTRAR EM MODO ECRÃ INTEIRO COM TRANSIÇÃO MATRIX DE CARREGAMENTO ---
+        function enterSection(id) {
+            if (isFullScreen) return;
+            isFullScreen = true;
+
+            // 1. Dispara o som analógico de flash imediatamente (sem assobio prévio)
+            playMatrixJackInSound();
+            
+            // 2. Dispara o strobe elétrico de forma instantânea em sincro total
+            triggerDoubleInvertedFlash();
+
+            // 3. Sobe a notificação de reprodução de música logo no início
+            showMusicNotification();
+
+            // 4. Ativa a chuva Matrix em tela cheia (como tempo de carregamento)
+            const canvasEl = document.getElementById('matrix-canvas');
+            canvasEl.style.opacity = "1.0";
+            startMatrixRain();
+
+            // 5. Apaga o acordeão de fundo com transição suave
+            const mainAcc = document.getElementById('main-accordion');
+            mainAcc.style.opacity = "0";
+            mainAcc.style.transform = "scale(0.96)";
+
+            // 6. Tempo de carregamento simulado (1.2 segundos rodando Matrix puro) antes de revelar o conteúdo
+            setTimeout(() => {
+                // Prepara o conteúdo da aba selecionada
+                for (let i = 1; i <= 5; i++) {
+                    document.getElementById(`fv-content-${i}`).classList.add('hidden');
+                }
+                document.getElementById(`fv-content-${id}`).classList.remove('hidden');
+
+                // Revela a secção final (conteúdo completo)
+                document.getElementById('fullview-container').classList.add('fullview-active');
+
+                // 7. Suaviza a opacidade do canvas Matrix em segundo plano após a revelação
+                setTimeout(() => {
+                    canvasEl.style.opacity = "0.06"; 
+                }, 300);
+
+            }, 1200); // 1.2 segundos de carregamento imersivo de dados
+        }
+
+        // --- RETORNAR AO MENU ACORDEÃO PRINCIPAL ---
+        function exitFullScreen() {
+            if (!isFullScreen) return;
+            isFullScreen = false;
+
+            // Som sutil de cancelamento de ação do PS2
+            playPS2CancelSound();
+
+            const canvasEl = document.getElementById('matrix-canvas');
+            canvasEl.style.opacity = "0.25"; // Aumenta levemente a opacidade como transição suave de saída
+
+            // Esconde o painel de ecrã inteiro instantaneamente com transição suave
+            document.getElementById('fullview-container').classList.remove('fullview-active');
+
+            // Devolve a opacidade do acordeão principal
+            setTimeout(() => {
+                const mainAcc = document.getElementById('main-accordion');
+                mainAcc.style.opacity = "1";
+                mainAcc.style.transform = "scale(1)";
+                
+                // Desliga o canvas Matrix por completo
+                setTimeout(() => {
+                    stopMatrixRain();
+                    canvasEl.style.opacity = "0";
+                }, 400);
+            }, 150);
+        }
+
+        // --- SELEÇÃO DE PAINEL (ACORDEÃO DINÂMICO - TRIGGER NO HOVER) ---
+        function focusPanel(id) {
+            if (isFullScreen) return;
+            
+            focusedId = id;
+            // Som do cursor tátil do PS2 Browser ao navegar pelas abas
+            playPS2HoverSound();
+
+            const panels = document.querySelectorAll('.stripe-panel');
+            panels.forEach((p, index) => {
+                const currentId = index + 1;
+                p.classList.remove('active-stripe');
+                
+                // Seleciona a barra de destaque dinâmica interna
+                const indicator = p.querySelector('.highlight-indicator');
+                
+                if (currentId === id) {
+                    p.style.flex = "2.2";
+                    p.classList.add('active-stripe');
+                    
+                    // Mostra permanentemente o destaque da aba focada atual
+                    if (indicator) {
+                        indicator.classList.remove('opacity-0', 'group-hover:opacity-100');
+                        indicator.classList.add('opacity-100');
+                    }
+                    
+                    const title = p.querySelector('.panel-vertical-title');
+                    if (title) {
+                        title.classList.remove('text-zinc-400');
+                        title.classList.add('text-cyan-400');
+                    }
+                    const num = p.querySelector('span.font-rajdhani');
+                    if (num) {
+                        num.classList.remove('text-zinc-800');
+                        num.classList.add('text-cyan-400');
+                    }
+                } else {
+                    p.style.flex = "1";
+                    
+                    // Restaura estado inicial de hover para as outras abas
+                    if (indicator) {
+                        indicator.classList.remove('opacity-100');
+                        indicator.classList.add('opacity-0', 'group-hover:opacity-100');
+                    }
+                    
+                    const title = p.querySelector('.panel-vertical-title');
+                    if (title) {
+                        title.classList.remove('text-cyan-400');
+                        title.classList.add('text-zinc-400');
+                    }
+                    const num = p.querySelector('span.font-rajdhani');
+                    if (num) {
+                        num.classList.remove('text-cyan-400');
+                        num.classList.add('text-zinc-800');
+                    }
+                }
+            });
+        }
+
+        // --- EVENTO DE MOUSE SCROLL PARA TROCA DE ABAS ---
+        let scrollTimeout;
+        window.addEventListener('wheel', (e) => {
+            if (isFullScreen || sidebarOpen) return;
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (e.deltaY > 0) {
+                    if (focusedId < 5) focusPanel(focusedId + 1);
+                } else {
+                    if (focusedId > 1) focusPanel(focusedId - 1);
+                }
+            }, 60);
+        });
+
+        // --- SISTEMA DE CHUVA MATRIX (Altíssima Fidelidade baseada em image_0d58b8.jpg) ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let matrixInterval;
+        let matrixSpeed = 30; // Frames por segundo
+        let matrixDensity = 50; // Percentagem de colunas ativas
+
+        const matrixChars = "排格権情其起普北逢爬怕呢内能品朋坡屏牛凭瓶评平且切r让软傻扰惹宿签千侵曲区取去親画別令領聊科李立力理里倆冷烈陸流路落毛麼么命明名彌秘密拿奈奶念年泡否批跑扁騙".split("");
+        let columns = [];
+
+        // Redimensionar canvas da chuva
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initMatrixColumns();
+        }
+
+        function initMatrixColumns() {
+            const fontSize = 15;
+            const numCols = Math.floor(canvas.width / fontSize);
+            columns = [];
+            for (let i = 0; i < numCols; i++) {
+                columns.push({
+                    x: i * fontSize,
+                    y: Math.random() * -canvas.height,
+                    speed: 2 + Math.random() * 5,
+                    opacity: 0.1 + Math.random() * 0.9,
+                    char: matrixChars[Math.floor(Math.random() * matrixChars.length)]
+                });
+            }
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(7, 8, 9, 0.15)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = "15px 'Courier New', monospace";
+
+            for (let i = 0; i < columns.length; i++) {
+                const col = columns[i];
+                
+                if ((i % 10) > (matrixDensity / 10)) continue;
+
+                const charVal = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                
+                if (Math.random() > 0.92) {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.shadowColor = "#ffc400";
+                    ctx.shadowBlur = 8;
+                } else {
+                    ctx.fillStyle = `rgba(200, 210, 220, ${col.opacity})`;
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.fillText(charVal, col.x, col.y);
+
+                col.y += col.speed;
+
+                if (col.y > canvas.height) {
+                    col.y = Math.random() * -150;
+                    col.speed = 2 + Math.random() * 5;
+                    col.opacity = 0.1 + Math.random() * 0.9;
+                }
+            }
+        }
+
+        function startMatrixRain() {
+            clearInterval(matrixInterval);
+            matrixInterval = setInterval(drawMatrix, 1000 / matrixSpeed);
+        }
+
+        // Parar chuva Matrix de forma limpa
+        function stopMatrixRain() {
+            clearInterval(matrixInterval);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function updateMatrixConfig() {
+            const speedSlider = document.getElementById('matrix-speed-range');
+            const densitySlider = document.getElementById('matrix-density-range');
+            
+            matrixSpeed = parseInt(speedSlider.value);
+            matrixDensity = parseInt(densitySlider.value);
+            
+            if (isFullScreen) {
+                startMatrixRain();
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // --- NAVEGAÇÃO DO RACK DE CASSETES VHS (Referência: 1000098734.jpg) ---
+        function selectTape(element, event) {
+            event.stopPropagation();
+            
+            const tapes = document.querySelectorAll('.vhs-tape');
+            tapes.forEach(t => t.classList.remove('active-tape'));
+            
+            element.classList.add('active-tape');
+            playPS2SelectSound(); // Som do clique tátil clássico do console!
+            
+            const title = element.getAttribute('data-proj-title');
+            const desc = element.getAttribute('data-proj-desc');
+            
+            document.getElementById('project-title').textContent = title;
+            document.getElementById('project-desc').textContent = desc;
+
+            element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        // --- SUBMISSÃO DO TERMINAL DE CONTACTO ---
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            playPS2SelectSound();
+            
+            // Abre o modal customizado integrado em vez de alert()
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100', 'pointer-events-auto');
+            
+            event.target.reset();
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('opacity-100', 'pointer-events-auto');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            exitFullScreen();
+        }
+
+        // --- ATIVAÇÃO E CONTROLE POR TECLADO (ENTER e ESC) ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                if (isFullScreen) {
+                    exitFullScreen();
+                } else {
+                    toggleSidebar();
+                }
+            }
+            if (e.key === 'Enter') {
+                if (!isFullScreen && !sidebarOpen) {
+                    enterSection(focusedId);
+                }
+            }
+        });
+
+        // --- CONTROLE DE MENUS E ABAS ---
+        function toggleSidebar() {
+            const menu = document.getElementById('curved-menu');
+            const backdrop = document.getElementById('menu-backdrop');
+            const menuIcon = document.getElementById('menu-btn-icon');
+            
+            sidebarOpen = !sidebarOpen;
+            
+            if (sidebarOpen) {
+                playMenuSound();
+                menu.classList.remove('-translate-x-full', 'opacity-0');
+                menu.classList.add('translate-x-0', 'opacity-100');
+                
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100', 'pointer-events-auto');
+
+                menuIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                `;
+            } else {
+                playPS2CancelSound();
+                menu.classList.remove('translate-x-0', 'opacity-100');
+                menu.classList.add('-translate-x-full', 'opacity-0');
+                
+                backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+
+                menuIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                `;
+            }
+        }
+
+        function handleMenuClick(panelIndex) {
+            toggleSidebar();
+            setTimeout(() => {
+                focusPanel(panelIndex);
+                enterSection(panelIndex);
+            }, 350);
+        }
+
+        // --- INICIALIZAÇÃO DA SESSÃO ---
+        window.onload = () => {
+            resizeCanvas();
+
+            // Evento sonoro sutil de cursor do console ao passar o mouse em painéis diagonais e cassetes
+            // Nota: Os painéis diagonais agora chamam focusPanel(id) nativamente no "onmouseenter", que por sua vez chama playPS2HoverSound(). 
+            // O seletor abaixo exclui as abas principais para evitar a execução duplicada de sons.
+            const interactives = document.querySelectorAll('.vhs-tape, .tilted-news-card, button, a');
+            interactives.forEach(elem => {
+                elem.addEventListener('mouseenter', () => {
+                    playPS2HoverSound();
+                });
+            });
+        };
+    </script>
 </body>
 </html>
