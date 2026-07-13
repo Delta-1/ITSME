@@ -195,22 +195,12 @@
         @keyframes eq-bar-2 { 0%, 100% { height: 40%; } 50% { height: 100%; } }
         @keyframes eq-bar-3 { 0%, 100% { height: 15%; } 50% { height: 80%; } }
 
-        /* Estilo da Grelha PS2 e Animações da Introdução */
-        @keyframes ps2-pulse {
-            0%, 100% { opacity: 0.15; }
-            50% { opacity: 0.35; }
-        }
-        .ps2-dust-grid {
-            background-size: 40px 40px;
-            background-image: radial-gradient(circle, rgba(255, 196, 0, 0.15) 1px, transparent 1px);
-            animation: ps2-pulse 8s infinite ease-in-out;
-        }
-
-        /* Brilho pulsante amarelo -> vermelho sobre o letreiro real na foto de fundo */
+        /* Brilho amarelo -> vermelho sobre o letreiro real na foto de fundo.
+           Fica estático (sem animação) até o clique iniciar a transição. */
         @keyframes sign-glow-pulse {
-            0%, 44%  { background: radial-gradient(circle, rgba(255,196,0,0.6) 0%, rgba(255,196,0,0) 72%); }
-            50%, 94% { background: radial-gradient(circle, rgba(255,43,43,0.6) 0%, rgba(255,43,43,0) 72%); }
-            100%     { background: radial-gradient(circle, rgba(255,196,0,0.6) 0%, rgba(255,196,0,0) 72%); }
+            0%   { background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
+            50%  { background: radial-gradient(circle, rgba(255,43,43,0.65) 0%, rgba(255,43,43,0) 72%); }
+            100% { background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
         }
         .itsme-sign-glow {
             position: absolute;
@@ -218,44 +208,53 @@
             width: 36%;
             height: 60%;
             mix-blend-mode: screen;
-            animation: sign-glow-pulse 1.8s infinite;
+            opacity: 0;
             pointer-events: none;
             filter: blur(4px);
         }
         .itsme-sign-glow-left { left: 0%; }
         .itsme-sign-glow-right { right: 0%; }
+        /* Ativado só no clique: pisca 2x (amarelo -> vermelho) antes de entrar no site */
+        #ps2-boot-screen.boot-blink-active .itsme-sign-glow {
+            opacity: 1;
+            animation: sign-glow-pulse 0.6s ease-in-out 2;
+        }
+
+        /* Vídeos de fundo dos painéis do acordeão: parados e escurecidos até o painel ficar em foco */
+        .panel-bg-video {
+            filter: brightness(0.4) saturate(0.7);
+            opacity: 0.3;
+            transition: filter 0.7s ease, opacity 0.7s ease;
+        }
+        .stripe-panel.active-stripe .panel-bg-video {
+            filter: brightness(1) saturate(1);
+            opacity: 0.65;
+        }
+        .panel-video-dim {
+            background: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.7s ease;
+        }
+        .stripe-panel.active-stripe .panel-video-dim {
+            opacity: 0.35;
+        }
     </style>
 </head>
 <body class="relative flex h-screen w-screen overflow-hidden">
 
-    <!-- COLD BOOT: ECRÃ DE ENTRADA DO PLAYSTATION (DELTS SPECIAL EDITION) -->
-    <div id="ps2-boot-screen" class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center transition-all duration-700 overflow-hidden">
+    <!-- COLD BOOT: ECRÃ DE ENTRADA (DELTS SPECIAL EDITION) -->
+    <!-- Estado inicial: só a foto, parada. Clicar em qualquer ponto dispara o piscar duplo e entra no site. -->
+    <div id="ps2-boot-screen" onclick="initiatePS2ConsoleBoot()" class="fixed inset-0 z-[200] bg-black overflow-hidden cursor-pointer transition-opacity duration-700">
         <!-- Foto de fundo: eu em frente ao letreiro neon ITSME -->
         <div class="absolute inset-0 z-0">
             <img src="itsme.jpeg" alt="Itsme" class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none" draggable="false">
-            <!-- Escurecimento para legibilidade do botão e continuidade com o resto do site -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/60 pointer-events-none"></div>
-            <!-- Brilho pulsante amarelo -> vermelho sobre a área do letreiro na própria foto -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/35 pointer-events-none"></div>
+            <!-- Brilho amarelo -> vermelho sobre a área do letreiro: só anima após o clique -->
             <div class="itsme-sign-glow itsme-sign-glow-left"></div>
             <div class="itsme-sign-glow itsme-sign-glow-right"></div>
         </div>
 
-        <!-- Nevoeiro e Grelha do PS2 -->
-        <div class="absolute inset-0 ps2-dust-grid pointer-events-none z-[1]"></div>
-
-        <!-- Elemento de Grelha 3D Canvas de Fundo (Torres do console) -->
-        <canvas id="ps2-canvas" class="absolute inset-0 z-[1] pointer-events-none"></canvas>
-
-        <div id="boot-logo-container" class="relative z-10 flex flex-col items-center space-y-10 text-center px-6">
-            <p class="text-[10px] md:text-xs tracking-[0.5em] text-zinc-300 font-rajdhani uppercase select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">DELTS EXPERIENCE // PORTFÓLIO IMERSIVO</p>
-
-            <!-- Botão MIM: entra no site -->
-            <div class="flex flex-col items-center space-y-4">
-                <button id="press-start-btn" onclick="initiatePS2ConsoleBoot()" class="group px-14 py-4 bg-black/40 backdrop-blur-sm border-2 border-cyan-400/50 hover:border-cyan-400 text-cyan-400 hover:text-white rounded-full font-rajdhani font-bold tracking-[0.45em] text-sm uppercase transition-all duration-500 hover:bg-cyan-400/10 hover:shadow-[0_0_30px_rgba(255,196,0,0.35)] select-none">
-                    MIM
-                </button>
-                <p class="text-[9px] tracking-[0.35em] text-zinc-300 font-rajdhani uppercase select-none animate-pulse drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">Clique em MIM para entrar</p>
-            </div>
+        <div class="absolute bottom-10 inset-x-0 flex justify-center z-10 pointer-events-none">
+            <p class="text-[9px] md:text-[10px] tracking-[0.5em] text-zinc-300 font-rajdhani uppercase select-none animate-pulse drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">Clique para entrar</p>
         </div>
     </div>
 
@@ -334,8 +333,12 @@
                 </div>
                 <!-- Barra de destaque ciano dinâmica controlada por JS -->
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
+
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo: parado e escuro até o painel entrar em foco -->
+                    <video id="panel-video-1" data-src="videos/1.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">01</span>
                         <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">SOBRE MIM</span>
@@ -359,9 +362,13 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo: parado e escuro até o painel entrar em foco -->
+                    <video id="panel-video-2" data-src="videos/2.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">02</span>
-                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">TECNOLOGIAS</span>
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">O QUE EU FAÇO</span>
                     </div>
 
                     <div class="panel-info-container flex flex-col justify-end h-3/4">
@@ -380,6 +387,10 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo: ativo por defeito porque Projects começa em foco -->
+                    <video id="panel-video-3" data-src="videos/3.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-cyan-400 font-rajdhani">03</span>
                         <span class="text-[9px] uppercase tracking-widest text-cyan-400 font-rajdhani font-bold">PORTFÓLIO DE PROJETOS</span>
@@ -403,9 +414,13 @@
                 <div class="highlight-indicator absolute left-0 top-0 bottom-0 w-[2.5px] bg-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="unskew-content h-full w-full absolute inset-0 flex flex-col justify-between p-12 md:p-16 select-none">
+                    <!-- Vídeo de fundo: parado e escuro até o painel entrar em foco -->
+                    <video id="panel-video-4" data-src="videos/4.mp4" muted loop playsinline preload="none" class="panel-bg-video absolute inset-0 w-full h-full object-cover -z-10"></video>
+                    <div class="panel-video-dim absolute inset-0 -z-10"></div>
+
                     <div class="flex items-center justify-between mt-12">
                         <span class="text-3xl font-bold text-zinc-800 font-rajdhani transition-colors duration-300 group-hover:text-zinc-500">04</span>
-                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">INTERATIVOS</span>
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani">PIANO & CRIATIVIDADE</span>
                     </div>
 
                     <div class="panel-info-container flex flex-col justify-end h-3/4">
@@ -452,133 +467,190 @@
         </button>
 
         <!-- CONTEÚDO SELECIONADO: BIOGRAPHY (ID: 1) -->
-        <div id="fv-content-1" class="hidden w-full max-w-5xl flex flex-col space-y-6">
-            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 01 // BIOGRAFIA ]</span>
-            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">ENGENHARIA E DESIGN DIGITAL</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-                <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+        <div id="fv-content-1" class="hidden w-full max-w-6xl max-h-[85vh] overflow-y-auto flex flex-col space-y-6 pr-2">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 01 // QUEM SOU EU ]</span>
+            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">MEDICINA + TECNOLOGIA</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-2">
+                <div class="md:col-span-2 space-y-4 text-sm text-zinc-400 leading-relaxed">
                     <p>
-                        Sou designer de interações digitais e arquiteto de software localizado em Portugal. Foco a minha atividade no desenvolvimento de experiências Web ricas, combinando estéticas inovadoras com otimizações técnicas robustas.
+                        Sou uma pessoa movida por curiosidade e pela construção de projetos. Não consigo ver um processo ineficiente ou um problema sem querer entender como consertar, automatizar ou transformar aquilo em uma solução prática ou em um negócio.
                     </p>
                     <p>
-                        Acredito que o design de alta fidelidade não deve apenas ser apelativo visualmente, mas sim contar uma história mecânica de facilidade de utilização e rapidez tecnológica.
+                        Tenho grande facilidade para aprender de forma autodidata: se tenho interesse por um assunto, pesquiso, testo e aprendo a mexer na ferramenta rapidamente por conta própria. Meu perfil combina lógica e estética — gosto de sistemas que funcionem bem, mas também valorizo muito o design, a identidade visual e a experiência de quem vai utilizar o que eu criei.
                     </p>
+                    <p>
+                        Atualmente divido minha rotina entre a faculdade de Medicina, onde estou no primeiro semestre focado nas matérias de base da saúde, e o universo da tecnologia, do marketing e dos negócios, onde aplico meu lado empreendedor.
+                    </p>
+
+                    <div class="pt-4 mt-2 border-t border-zinc-900 space-y-3">
+                        <h3 class="text-cyan-400 font-bold font-rajdhani text-sm uppercase tracking-widest">Forma de trabalhar e objetivos</h3>
+                        <p>
+                            Funciono melhor com autonomia e liberdade para criar. Prefiro uma comunicação direta, clara e sem excesso de formalidades. Meu aprendizado é essencialmente prático: desenvolver um projeto real, testar as hipóteses e corrigir os erros rapidamente ao longo do caminho.
+                        </p>
+                        <p class="text-zinc-500">
+                            Como ponto de atenção, me entusiasmo fácil com novas ideias — por isso me policio para manter o foco e concluir os projetos iniciados antes de partir para o próximo desafio.
+                        </p>
+                        <p class="text-white font-semibold">
+                            Objetivo final: unir o conhecimento da Medicina com o potencial da tecnologia e da Inteligência Artificial, construindo soluções inovadoras na saúde e projetos próprios escaláveis e eficientes.
+                        </p>
+                    </div>
                 </div>
-                <!-- Mini Cronograma Estilizado -->
-                <div class="bg-zinc-950/60 p-6 rounded-lg border border-zinc-900 space-y-4">
-                    <h3 class="text-white font-bold font-rajdhani text-lg uppercase border-b border-zinc-900 pb-2 text-cyan-400">HISTORIAL DE ATIVIDADE</h3>
-                    <div class="space-y-3">
-                        <div class="border-l-2 border-cyan-400 pl-4">
-                            <span class="text-[10px] text-zinc-500 font-rajdhani">2024 - PRESENTE</span>
-                            <h4 class="text-xs font-bold text-white">Desenvolvedor e Designer Criativo Senior</h4>
-                        </div>
-                        <div class="border-l-2 border-zinc-800 pl-4">
-                            <span class="text-[10px] text-zinc-500 font-rajdhani">2021 - 2023</span>
-                            <h4 class="text-xs font-bold text-white">Arquiteto Front-End na CPUSIS Corp</h4>
-                        </div>
+
+                <!-- Cartão de redes / atividade -->
+                <div class="bg-zinc-950/60 p-6 rounded-lg border border-zinc-900 space-y-5 h-fit">
+                    <h3 class="text-white font-bold font-rajdhani text-lg uppercase border-b border-zinc-900 pb-2 text-cyan-400">Conecte-se</h3>
+
+                    <a href="https://instagram.com/V_ctorsz" target="_blank" rel="noopener" class="flex items-center justify-between group">
+                        <span class="text-xs text-zinc-400 group-hover:text-white transition">Instagram</span>
+                        <span class="text-xs text-cyan-400 font-bold font-rajdhani">@V_ctorsz</span>
+                    </a>
+                    <a href="https://github.com/Delta-1" target="_blank" rel="noopener" class="flex items-center justify-between group">
+                        <span class="text-xs text-zinc-400 group-hover:text-white transition">GitHub</span>
+                        <span class="text-xs text-cyan-400 font-bold font-rajdhani">Delta-1</span>
+                    </a>
+
+                    <div class="pt-2 border-t border-zinc-900">
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-rajdhani block mb-2">Histórico de contribuições</span>
+                        <a href="https://github.com/Delta-1" target="_blank" rel="noopener">
+                            <img src="https://ghchart.rshah.org/ffc400/Delta-1" alt="Histórico de contribuições no GitHub de Delta-1" class="w-full rounded border border-zinc-800 bg-zinc-950" loading="lazy">
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- CONTEÚDO SELECIONADO: EXPERIENCE (ID: 2) -->
-        <div id="fv-content-2" class="hidden w-full max-w-5xl flex flex-col space-y-6">
-            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 02 // CAPACIDADES ]</span>
-            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">TECNOLOGIAS DE PONTA</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+        <div id="fv-content-2" class="hidden w-full max-w-6xl max-h-[85vh] overflow-y-auto flex flex-col space-y-6 pr-2">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 02 // O QUE EU FAÇO ]</span>
+            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">PORTFÓLIO DE HABILIDADES</h2>
+            <p class="text-sm text-zinc-400 max-w-2xl leading-relaxed">
+                Tenho facilidade para participar de um projeto do início ao fim porque já passei por diferentes áreas técnicas e de comunicação.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
                 <!-- Competência 1 -->
                 <div class="bg-zinc-950 p-6 border border-zinc-900 rounded space-y-3">
                     <span class="text-cyan-400 font-rajdhani text-2xl font-bold">01</span>
-                    <h3 class="text-white font-bold uppercase text-sm">Aplicações Reativas</h3>
-                    <p class="text-xs text-zinc-500 leading-relaxed">Arquitetura modular avançada focada em interações fluidas do utilizador e tempos de carregamento instantâneos.</p>
+                    <h3 class="text-white font-bold uppercase text-sm">Tecnologia, Sistemas e IA</h3>
+                    <ul class="text-xs text-zinc-500 leading-relaxed space-y-2 list-disc list-inside">
+                        <li><span class="text-zinc-300 font-semibold">Suporte e Infraestrutura</span> — manutenção de computadores e suporte técnico de sistemas de software, atuação diária na CPUSIS.</li>
+                        <li><span class="text-zinc-300 font-semibold">Desenvolvimento e Automação</span> — plataformas online, páginas web e automação de processos para ganhar tempo e eficiência.</li>
+                        <li><span class="text-zinc-300 font-semibold">Inteligência Artificial</span> — estudo constante de IA como diferencial competitivo e escala em modelos de negócio.</li>
+                    </ul>
                 </div>
                 <!-- Competência 2 -->
                 <div class="bg-zinc-950 p-6 border border-zinc-900 rounded space-y-3">
                     <span class="text-cyan-400 font-rajdhani text-2xl font-bold">02</span>
-                    <h3 class="text-white font-bold uppercase text-sm">Direção de Arte / IA</h3>
-                    <p class="text-xs text-zinc-500 leading-relaxed">Criação de marcas e identidades visuais personalizadas, geradas e otimizadas com modelos inteligentes.</p>
+                    <h3 class="text-white font-bold uppercase text-sm">Design, Branding e Marketing</h3>
+                    <ul class="text-xs text-zinc-500 leading-relaxed space-y-2 list-disc list-inside">
+                        <li><span class="text-zinc-300 font-semibold">Identidade Visual</span> — marcas e logotipos do zero, para o setor corporativo e para o mercado de estética/prestadores de serviço.</li>
+                        <li><span class="text-zinc-300 font-semibold">Estratégia Digital</span> — posicionamento de mercado, criação de conteúdo em vídeo e funis de conversão.</li>
+                    </ul>
                 </div>
                 <!-- Competência 3 -->
                 <div class="bg-zinc-950 p-6 border border-zinc-900 rounded space-y-3">
                     <span class="text-cyan-400 font-rajdhani text-2xl font-bold">03</span>
-                    <h3 class="text-white font-bold uppercase text-sm">WebGL & Motion</h3>
-                    <p class="text-xs text-zinc-500 leading-relaxed">Estruturação de animações complexas em 3D, efeitos de iluminação em tempo real utilizando Three.js ou canvas puro.</p>
+                    <h3 class="text-white font-bold uppercase text-sm">Gestão e Comunicação</h3>
+                    <ul class="text-xs text-zinc-500 leading-relaxed space-y-2 list-disc list-inside">
+                        <li><span class="text-zinc-300 font-semibold">Recursos Humanos</span> — recrutamento e seleção, atuação na Alpha Soluções, com sensibilidade para análise de perfis e dinâmica de equipe.</li>
+                        <li><span class="text-zinc-300 font-semibold">Liderança e Organização</span> — coordenar grupos, delegar com clareza e estruturar apresentações complexas.</li>
+                        <li><span class="text-zinc-300 font-semibold">Idiomas</span> — espanhol para apresentações acadêmicas; italiano em aprendizado, com foco em internacionalização.</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
         <!-- CONTEÚDO SELECIONADO: PROJECTS (ID: 3) com a magnífica prateleira Kurosawa -->
-        <div id="fv-content-3" class="hidden w-full max-w-5xl flex flex-col space-y-4">
+        <div id="fv-content-3" class="hidden w-full max-w-5xl max-h-[85vh] overflow-y-auto flex flex-col space-y-4 pr-2">
             <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold">[ SECÇÃO 03 // PRATELEIRA DE PROJETOS ]</span>
             <h2 class="text-2xl md:text-4xl font-black italic text-white tracking-tight font-rajdhani">GABINETE KUROSAWA VHS</h2>
-            
+
             <!-- A Prateleira VHS Kurosawa -->
             <div class="vhs-shelf" id="vhs-shelf-container">
                 <!-- Projeto 1 (Ativo por defeito) -->
-                <div class="vhs-tape active-tape" data-proj-title="Sistema de Formação CPUSIS" data-proj-desc="Plataforma de alta fidelidade para gestão de guiões de suporte, roteiros de formação interativos e base de dados administrativa corporativa." onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">TREINO CPUSIS</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=CPUSIS')">
-                        <span class="text-[9px] text-cyan-400 font-rajdhani font-semibold">SYS_V2.6</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">CPU_SIS TRAINING</div>
+                <div class="vhs-tape active-tape" data-proj-title="MONOFY" data-proj-desc="Faça monografias de uma forma rápida e segura com IA." data-proj-link="https://delta-1.github.io/MONOFY/" onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">MONOFY</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=MONOFY')">
+                        <span class="text-[9px] text-cyan-400 font-rajdhani font-semibold">IA_TOOL</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">MONOFY</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 01</span>
                     </div>
                 </div>
 
                 <!-- Projeto 2 -->
-                <div class="vhs-tape" data-proj-title="Conceitos Visuais & Direção de IA" data-proj-desc="Geração, refinamento e direção estética para marcas contemporâneas através de Inteligência Artificial generativa avançada." onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">ARTIFICIAL INTEL</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=AI+Design')">
-                        <span class="text-[9px] text-pink-500 font-rajdhani font-semibold">GEN_AI</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">ARTE INTELIGENTE</div>
+                <div class="vhs-tape" data-proj-title="CURRICULY" data-proj-desc="Faça currículos de forma rápida e segura." data-proj-link="https://delta-1.github.io/Curriculy/" onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">CURRICULY</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=CURRICULY')">
+                        <span class="text-[9px] text-pink-400 font-rajdhani font-semibold">IA_TOOL</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">CURRICULY</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 02</span>
                     </div>
                 </div>
 
                 <!-- Projeto 3 -->
-                <div class="vhs-tape" data-proj-title="Gamificação Universitária: Biologia" data-proj-desc="Apresentação gamificada interativa sobre Núcleo Celular e Gametogénese desenvolvida para ensino académico dinâmico." onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">ACAD_BIOLOGY</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=BIOLOGY')">
-                        <span class="text-[9px] text-green-400 font-rajdhani font-semibold">ACAD_BIO</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">NÚCLEO CELULAR</div>
+                <div class="vhs-tape" data-proj-title="BIBLIONMED" data-proj-desc="Biblioteca de medicina totalmente gratuita e open-source." data-proj-link="https://delta-1.github.io/Biblionmed/" onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">BIBLIONMED</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=BIBLIONMED')">
+                        <span class="text-[9px] text-green-400 font-rajdhani font-semibold">OPEN_SOURCE</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">BIBLIONMED</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 03</span>
                     </div>
                 </div>
 
                 <!-- Projeto 4 -->
-                <div class="vhs-tape" data-proj-title="Montagens & Vídeo Design Cyberpunk" data-proj-desc="Criação, edição e efeitos estilizados para vídeos de ficção científica noir integrando áudio imersivo e narrativa estética visual." onclick="selectTape(this, event)">
-                    <span class="vhs-tape-title">CYBERPUNK EDITS</span>
-                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=CYBERPUNK')">
-                        <span class="text-[9px] text-red-500 font-rajdhani font-semibold">EDITS_NOIR</span>
-                        <div class="text-[12px] font-bold text-white uppercase leading-tight">CYBERPUNK SHORTS</div>
+                <div class="vhs-tape" data-proj-title="VITRINE PLAYER" data-proj-desc="Coloque vídeos, slides e imagens para passar na TV da sua loja." data-proj-link="https://delta-1.github.io/VITRINE.WEB.PLAYER/" onclick="selectTape(this, event)">
+                    <span class="vhs-tape-title">VITRINE PLAYER</span>
+                    <div class="vhs-tape-cover" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://placehold.co/180x280/1a1b22/ffc400?text=VITRINE')">
+                        <span class="text-[9px] text-red-400 font-rajdhani font-semibold">DIGITAL_SIGNAGE</span>
+                        <div class="text-[12px] font-bold text-white uppercase leading-tight">VITRINE PLAYER</div>
                         <span class="text-[8px] text-zinc-500 font-rajdhani">CASS_NO. 04</span>
                     </div>
                 </div>
             </div>
 
             <!-- Dados Descritivos Dinâmicos da fita ativa -->
-            <div class="border-t border-zinc-900 pt-4 mt-2">
-                <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold block mb-1" id="project-tag">CASO DE ESTUDO</span>
-                <h4 class="text-xl font-bold text-white mb-2" id="project-title">Sistema de Formação CPUSIS</h4>
-                <p class="text-xs text-zinc-400 leading-relaxed max-w-xl" id="project-desc">
-                    Plataforma de alta fidelidade para gestão de guiões de suporte, roteiros de formação interativos e base de dados administrativa corporativa.
-                </p>
+            <div class="border-t border-zinc-900 pt-4 mt-2 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <div>
+                    <span class="text-cyan-400 font-rajdhani text-xs tracking-widest uppercase font-bold block mb-1" id="project-tag">PROJETO</span>
+                    <h4 class="text-xl font-bold text-white mb-2" id="project-title">MONOFY</h4>
+                    <p class="text-xs text-zinc-400 leading-relaxed max-w-xl" id="project-desc">
+                        Faça monografias de uma forma rápida e segura com IA.
+                    </p>
+                </div>
+                <a id="project-link" href="https://delta-1.github.io/MONOFY/" target="_blank" rel="noopener" class="shrink-0 inline-flex items-center justify-center gap-2 bg-cyan-400 hover:bg-cyan-500 text-black font-rajdhani font-bold tracking-widest text-xs uppercase px-6 py-3 rounded transition shadow-lg shadow-cyan-500/10">
+                    Abrir Projeto <span>&rarr;</span>
+                </a>
             </div>
         </div>
 
-        <!-- CONTEÚDO SELECIONADO: THE LAB (ID: 4) com interações do utilizador -->
-        <div id="fv-content-4" class="hidden w-full max-w-5xl flex flex-col space-y-6">
-            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 04 // EXPERIMENTOS INTERATIVOS ]</span>
-            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">CONCEITOS EM EXECUÇÃO</h2>
-            
-            <p class="text-xs text-zinc-400 max-w-lg leading-relaxed">
-                Este laboratório aloja algoritmos rápidos e interações ativas em tempo real. Pode interagir diretamente com a densidade e a velocidade do código Matrix que vê no fundo!
+        <!-- CONTEÚDO SELECIONADO: THE LAB (ID: 4) — piano e lado criativo -->
+        <div id="fv-content-4" class="hidden w-full max-w-5xl max-h-[85vh] overflow-y-auto flex flex-col space-y-6 pr-2">
+            <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 04 // LADO CRIATIVO ]</span>
+            <h2 class="text-4xl md:text-6xl font-black italic text-white tracking-tight font-rajdhani">PIANO & CRIATIVIDADE</h2>
+
+            <p class="text-sm text-zinc-400 max-w-2xl leading-relaxed">
+                Fora da tecnologia e da faculdade, o piano é o meu espaço de criatividade. Acompanhe as apresentações no meu canal.
             </p>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="rounded-lg overflow-hidden border border-zinc-900 bg-black aspect-video">
+                    <video src="videos/4.mp4" controls playsinline class="w-full h-full object-cover"></video>
+                </div>
+                <div class="flex flex-col justify-center space-y-4">
+                    <div>
+                        <span class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase">Canal no YouTube</span>
+                        <h4 class="text-white font-bold text-lg">Delts Priggan — Piano</h4>
+                    </div>
+                    <a href="https://www.youtube.com/@Deltspriggan" target="_blank" rel="noopener" class="inline-flex items-center gap-2 w-fit bg-cyan-400 hover:bg-cyan-500 text-black font-rajdhani font-bold tracking-widest text-xs uppercase px-6 py-3 rounded transition shadow-lg shadow-cyan-500/10">
+                        Ver canal <span>&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bónus: laboratório interativo Matrix -->
             <div class="bg-zinc-950 p-6 rounded-lg border border-zinc-900 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Painel de Controlo da Anão -->
                 <div class="space-y-4">
-                    <h3 class="text-white font-rajdhani font-bold text-md tracking-wider">TERMINAL DE CONTROLO MATRIX</h3>
+                    <h3 class="text-white font-rajdhani font-bold text-md tracking-wider">BÓNUS: TERMINAL DE CONTROLO MATRIX</h3>
                     <div class="space-y-3">
                         <div>
                             <label class="text-[11px] text-zinc-500 block mb-1">VELOCIDADE DOS DADOS (FPS)</label>
@@ -594,16 +666,19 @@
                 <div class="flex flex-col justify-center space-y-2 border-l border-zinc-900 pl-8">
                     <span class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase">AMBIENTE INTEGRADO</span>
                     <h4 class="text-white font-bold text-sm">Visualizer v2.0</h4>
-                    <p class="text-[11px] text-zinc-400 leading-relaxed">Os caracteres da chuva utilizam os ideogramas tradicionais para emular o design original carregado.</p>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed">Interaja com a densidade e a velocidade do código Matrix que aparece no fundo desta secção.</p>
                 </div>
             </div>
         </div>
 
         <!-- CONTEÚDO SELECIONADO: CONTACT (ID: 5) com formulário industrial -->
-        <div id="fv-content-5" class="hidden w-full max-w-2xl flex flex-col space-y-6">
+        <div id="fv-content-5" class="hidden w-full max-w-2xl max-h-[85vh] overflow-y-auto flex flex-col space-y-6 pr-2">
             <span class="text-cyan-400 font-rajdhani text-sm tracking-widest uppercase font-bold">[ SECÇÃO 05 // TERMINAL DE MENSAGEM ]</span>
-            <h2 class="text-4xl md:text-5xl font-black italic text-white tracking-tight font-rajdhani">INICIAR CONEXÃO</h2>
-            
+            <h2 class="text-4xl md:text-5xl font-black italic text-white tracking-tight font-rajdhani">VAMOS CRIAR ALGO</h2>
+            <p class="text-sm text-zinc-400 leading-relaxed max-w-lg">
+                Precisa de um site, um portfólio, um aplicativo ou quer tirar uma ideia do papel? Me manda uma mensagem e vamos conversar sobre o seu projeto.
+            </p>
+
             <form onsubmit="handleContactSubmit(event)" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -616,13 +691,18 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase block mb-1">DETALHES DO PROJETO</label>
-                    <textarea rows="4" required class="w-full bg-zinc-950 border border-zinc-800 focus:border-cyan-400 focus:outline-none p-3 text-xs text-white rounded resize-none"></textarea>
+                    <label class="text-[10px] text-zinc-500 font-rajdhani tracking-wider uppercase block mb-1">O QUE VOCÊ QUER DESENVOLVER?</label>
+                    <textarea rows="4" required placeholder="Site, portfólio, aplicativo, automação, uma ideia..." class="w-full bg-zinc-950 border border-zinc-800 focus:border-cyan-400 focus:outline-none p-3 text-xs text-white rounded resize-none placeholder:text-zinc-700"></textarea>
                 </div>
                 <button type="submit" class="w-full bg-cyan-400 hover:bg-cyan-500 text-black font-rajdhani font-bold tracking-widest text-xs uppercase py-3 transition rounded duration-300 shadow-lg shadow-cyan-500/10">
                     ENVIAR TRANSMISSÃO
                 </button>
             </form>
+
+            <div class="flex items-center gap-6 pt-4 border-t border-zinc-900">
+                <a href="https://instagram.com/V_ctorsz" target="_blank" rel="noopener" class="text-xs text-zinc-500 hover:text-cyan-400 transition">Instagram @V_ctorsz</a>
+                <a href="https://github.com/Delta-1" target="_blank" rel="noopener" class="text-xs text-zinc-500 hover:text-cyan-400 transition">GitHub /Delta-1</a>
+            </div>
         </div>
 
     </div>
@@ -1003,92 +1083,29 @@
             } catch(e){}
         }
 
-        // --- ANIMAÇÃO CANVAS: TORRES 3D ERGUE-SE DO PLAYSTATION ---
-        const bootCanvas = document.getElementById('ps2-canvas');
-        const bootCtx = bootCanvas.getContext('2d');
-        let bootAnimationId = null;
-        let towers = [];
-
-        function resizeBootCanvas() {
-            bootCanvas.width = window.innerWidth;
-            bootCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeBootCanvas);
-        resizeBootCanvas();
-
-        function initPS2Towers() {
-            towers = [];
-            const count = 45;
-            for (let i = 0; i < count; i++) {
-                towers.push({
-                    x: Math.random() * bootCanvas.width,
-                    y: bootCanvas.height + 100 + Math.random() * 200,
-                    z: 0.6 + Math.random() * 2.2,
-                    width: 15 + Math.random() * 30,
-                    height: 50 + Math.random() * 150,
-                    speed: 2.2 + Math.random() * 4.0,
-                    opacity: 0.12 + Math.random() * 0.45,
-                    color: Math.random() > 0.5 ? "rgba(255, 196, 0, " : "rgba(255, 140, 0, " // Azul e ciano originais do PS2
-                });
-            }
-        }
-        initPS2Towers();
-
-        function drawPS2Towers() {
-            bootCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
-            bootCtx.fillRect(0, 0, bootCanvas.width, bootCanvas.height);
-
-            towers.forEach(t => {
-                t.y -= t.speed * t.z;
-
-                bootCtx.fillStyle = `${t.color}${t.opacity})`;
-                bootCtx.strokeStyle = "rgba(255, 255, 255, 0.04)";
-                
-                bootCtx.fillRect(t.x, t.y, t.width * t.z, t.height * t.z);
-                bootCtx.strokeRect(t.x, t.y, t.width * t.z, t.height * t.z);
-
-                if (t.y + t.height < -100) {
-                    t.y = bootCanvas.height + 100;
-                    t.x = Math.random() * bootCanvas.width;
-                }
-            });
-
-            bootAnimationId = requestAnimationFrame(drawPS2Towers);
-        }
-
-        // --- SISTEMA DE INICIALIZAÇÃO DO CONSOLE ---
+        // --- SISTEMA DE INICIALIZAÇÃO: CLIQUE NA FOTO PISCA 2X E ENTRA NO SITE ---
+        let bootTransitioning = false;
         function initiatePS2ConsoleBoot() {
-            // Desativa botão e dispara som do PS2 com piano majestoso
-            document.getElementById('press-start-btn').style.display = "none";
+            if (bootTransitioning) return;
+            bootTransitioning = true;
+
+            const bootScreen = document.getElementById('ps2-boot-screen');
+            bootScreen.style.cursor = "default";
+            bootScreen.classList.add('boot-blink-active'); // dispara o piscar amarelo -> vermelho 2x no letreiro
             playPS2Startup();
 
-            // Ativa renderizador de torres
-            drawPS2Towers();
-
-            // Mostra o Logo "DELTS" rapidamente
+            // Aguarda os 2 ciclos do piscar (0.6s x 2) antes de revelar o portfólio
             setTimeout(() => {
-                document.getElementById('boot-logo-container').classList.remove('opacity-0', 'scale-95', 'translate-y-4');
-                document.getElementById('boot-logo-container').classList.add('opacity-100', 'scale-100', 'translate-y-0');
-            }, 300);
-
-            // Transição para o portfólio completo
-            setTimeout(() => {
-                cancelAnimationFrame(bootAnimationId);
-
-                // Dispara flash e oculta tela de boot
                 triggerDoubleInvertedFlash();
-                const bootScreen = document.getElementById('ps2-boot-screen');
                 bootScreen.style.opacity = "0";
                 bootScreen.style.pointerEvents = "none";
 
-                // Habilita display none completo após a transição para evitar bloqueios de cliques
                 setTimeout(() => {
                     bootScreen.style.display = "none";
                 }, 700);
 
-                // Dá foco suave ao painel inicial Projects
                 focusPanel(3);
-            }, 2200); 
+            }, 1200);
         }
 
         // --- DISPARADOR DO FLASH RETRO-INVERSOR DUPLO ---
@@ -1142,6 +1159,9 @@
             mainAcc.style.opacity = "0";
             mainAcc.style.transform = "scale(0.96)";
 
+            // 5b. Pausa os vídeos de fundo dos painéis enquanto a secção está em ecrã inteiro
+            pauseAllPanelVideos();
+
             // 6. Tempo de carregamento simulado (1.2 segundos rodando Matrix puro) antes de revelar o conteúdo
             setTimeout(() => {
                 // Prepara o conteúdo da aba selecionada
@@ -1186,6 +1206,9 @@
                     stopMatrixRain();
                     canvasEl.style.opacity = "0";
                 }, 400);
+
+                // Retoma o vídeo do painel em foco
+                updatePanelVideos(focusedId);
             }, 150);
         }
 
@@ -1246,6 +1269,34 @@
                     }
                 }
             });
+
+            updatePanelVideos(id);
+        }
+
+        // --- VÍDEOS DE FUNDO DOS PAINÉIS: só tocam quando o painel está em foco ---
+        function updatePanelVideos(activeId) {
+            for (let i = 1; i <= 4; i++) {
+                const vid = document.getElementById(`panel-video-${i}`);
+                if (!vid) continue;
+
+                if (i === activeId) {
+                    // Carrega o vídeo só na primeira vez que o painel entra em foco (evita baixar tudo de uma vez)
+                    if (!vid.dataset.loaded) {
+                        vid.src = vid.dataset.src;
+                        vid.dataset.loaded = "1";
+                    }
+                    vid.play().catch(() => {});
+                } else {
+                    vid.pause();
+                }
+            }
+        }
+
+        function pauseAllPanelVideos() {
+            for (let i = 1; i <= 4; i++) {
+                const vid = document.getElementById(`panel-video-${i}`);
+                if (vid) vid.pause();
+            }
         }
 
         // --- EVENTO DE MOUSE SCROLL PARA TROCA DE ABAS ---
@@ -1366,9 +1417,13 @@
             
             const title = element.getAttribute('data-proj-title');
             const desc = element.getAttribute('data-proj-desc');
-            
+            const link = element.getAttribute('data-proj-link');
+
             document.getElementById('project-title').textContent = title;
             document.getElementById('project-desc').textContent = desc;
+
+            const linkEl = document.getElementById('project-link');
+            if (linkEl && link) linkEl.href = link;
 
             element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }
