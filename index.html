@@ -195,6 +195,12 @@
             #music-notification {
                 max-width: calc(100vw - 3rem);
             }
+
+            /* Nos 3 primeiros vídeos o rosto fica na parte de cima do quadro: sobe o foco do corte
+               para não cortar o rosto nos cartões baixos e largos do telemóvel */
+            #panel-video-1, #panel-video-2, #panel-video-3 {
+                object-position: center 15%;
+            }
         }
     </style>
 </head>
@@ -285,7 +291,7 @@
             <!-- FAIXA 01: BIOGRAPHY (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-1" onmouseenter="focusPanel(1)" onclick="handlePanelTap(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
                 <!-- Vídeo de fundo: fica fora da camada reta, herdando a inclinação do painel (sem vazios nos cantos) -->
-                <video id="panel-video-1" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
+                <video id="panel-video-1" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
                 <div class="panel-video-dim"></div>
 
                 <div class="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none">
@@ -339,7 +345,7 @@
             <!-- FAIXA 03: PROJECTS (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-3" onmouseenter="focusPanel(3)" onclick="handlePanelTap(3)" class="stripe-panel flex-[2.2] h-full border-r border-zinc-900/60 bg-[#15181c] relative overflow-hidden cursor-pointer group active-stripe">
                 <!-- Vídeo de fundo: fica fora da camada reta, herdando a inclinação do painel (sem vazios nos cantos) -->
-                <video id="panel-video-3" data-src="videos/3.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
+                <video id="panel-video-3" data-src="videos/1.mp4" loop playsinline preload="none" class="panel-bg-video object-cover"></video>
                 <div class="panel-video-dim"></div>
 
                 <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/10 via-transparent to-transparent pointer-events-none"></div>
