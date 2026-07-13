@@ -1004,12 +1004,30 @@
 
         // --- TOQUE NO PAINEL: primeiro toque só seleciona (foca), o segundo toque confirma e entra.
         //     No desktop o hover já foca antes do clique, então continua a entrar num clique só. ---
+        // Ecrãs com rato/trackpad têm hover de verdade (o cursor foca a aba antes do clique acontecer).
+        // Em ecrãs de toque, o toque dispara um "mouseenter" fantasma praticamente junto com o clique,
+        // então não dá para usar o foco para saber se já é o segundo toque — por isso guardamos à parte
+        // qual foi a última aba tocada, só atualizada pelo próprio toque, nunca pelo hover fantasma.
+        const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        let lastTappedId = null;
+
         function handlePanelTap(id) {
             if (isFullScreen) return;
-            if (focusedId === id) {
-                enterSection(id);
+
+            if (supportsHover) {
+                if (focusedId === id) {
+                    enterSection(id);
+                } else {
+                    focusPanel(id);
+                }
             } else {
-                focusPanel(id);
+                if (lastTappedId === id) {
+                    enterSection(id);
+                    lastTappedId = null;
+                } else {
+                    focusPanel(id);
+                    lastTappedId = id;
+                }
             }
         }
 
