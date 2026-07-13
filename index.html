@@ -29,8 +29,6 @@
         :root {
             /* COR TEMA PRINCIPAL: amarelo néon (substitui o antigo ciano) */
             --neon-cyan: #ffc400;
-            --neon-yellow: #ffc400;
-            --neon-red: #ff2b2b;
             --dark-bg: #070809;
             --panel-bg: #121316;
             --skew-angle: -18deg;
@@ -208,47 +206,55 @@
             animation: ps2-pulse 8s infinite ease-in-out;
         }
 
-        /* CARA DO SITE: néon "ITSME" a piscar de amarelo para vermelho */
-        @keyframes itsme-neon-blink {
-            0%, 44%  { color: var(--neon-yellow);
-                       text-shadow: 0 0 10px var(--neon-yellow), 0 0 24px rgba(255,196,0,0.9), 0 0 50px rgba(255,196,0,0.55), 0 0 95px rgba(255,196,0,0.35); }
-            47%      { opacity: 0.55; }
-            50%, 94% { color: var(--neon-red);
-                       text-shadow: 0 0 10px var(--neon-red), 0 0 24px rgba(255,43,43,0.9), 0 0 50px rgba(255,43,43,0.55), 0 0 95px rgba(255,43,43,0.35); }
-            97%      { opacity: 0.55; }
-            100%     { color: var(--neon-yellow);
-                       text-shadow: 0 0 10px var(--neon-yellow), 0 0 24px rgba(255,196,0,0.9), 0 0 50px rgba(255,196,0,0.55), 0 0 95px rgba(255,196,0,0.35); }
+        /* Brilho pulsante amarelo -> vermelho sobre o letreiro real na foto de fundo */
+        @keyframes sign-glow-pulse {
+            0%, 44%  { background: radial-gradient(circle, rgba(255,196,0,0.6) 0%, rgba(255,196,0,0) 72%); }
+            50%, 94% { background: radial-gradient(circle, rgba(255,43,43,0.6) 0%, rgba(255,43,43,0) 72%); }
+            100%     { background: radial-gradient(circle, rgba(255,196,0,0.6) 0%, rgba(255,196,0,0) 72%); }
         }
-        .itsme-blink {
-            animation: itsme-neon-blink 1.8s infinite;
-            opacity: 1;
+        .itsme-sign-glow {
+            position: absolute;
+            top: 15%;
+            width: 36%;
+            height: 60%;
+            mix-blend-mode: screen;
+            animation: sign-glow-pulse 1.8s infinite;
+            pointer-events: none;
+            filter: blur(4px);
         }
+        .itsme-sign-glow-left { left: 0%; }
+        .itsme-sign-glow-right { right: 0%; }
     </style>
 </head>
 <body class="relative flex h-screen w-screen overflow-hidden">
 
     <!-- COLD BOOT: ECRÃ DE ENTRADA DO PLAYSTATION (DELTS SPECIAL EDITION) -->
-    <div id="ps2-boot-screen" class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center transition-all duration-700">
+    <div id="ps2-boot-screen" class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center transition-all duration-700 overflow-hidden">
+        <!-- Foto de fundo: eu em frente ao letreiro neon ITSME -->
+        <div class="absolute inset-0 z-0">
+            <img src="itsme.jpeg" alt="Itsme" class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none" draggable="false">
+            <!-- Escurecimento para legibilidade do botão e continuidade com o resto do site -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/60 pointer-events-none"></div>
+            <!-- Brilho pulsante amarelo -> vermelho sobre a área do letreiro na própria foto -->
+            <div class="itsme-sign-glow itsme-sign-glow-left"></div>
+            <div class="itsme-sign-glow itsme-sign-glow-right"></div>
+        </div>
+
         <!-- Nevoeiro e Grelha do PS2 -->
-        <div class="absolute inset-0 ps2-dust-grid pointer-events-none"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/15 via-transparent to-transparent pointer-events-none"></div>
-        
+        <div class="absolute inset-0 ps2-dust-grid pointer-events-none z-[1]"></div>
+
         <!-- Elemento de Grelha 3D Canvas de Fundo (Torres do console) -->
-        <canvas id="ps2-canvas" class="absolute inset-0 z-0 pointer-events-none"></canvas>
+        <canvas id="ps2-canvas" class="absolute inset-0 z-[1] pointer-events-none"></canvas>
 
         <div id="boot-logo-container" class="relative z-10 flex flex-col items-center space-y-10 text-center px-6">
-            <!-- CARA DO SITE: néon "ITSME" a piscar de amarelo para vermelho -->
-            <div class="flex flex-col items-center space-y-3">
-                <h1 class="itsme-blink text-7xl md:text-9xl font-black italic tracking-[0.15em] font-rajdhani select-none">ITSME</h1>
-                <p class="text-[10px] md:text-xs tracking-[0.5em] text-zinc-500 font-rajdhani uppercase select-none">DELTS EXPERIENCE // PORTFÓLIO IMERSIVO</p>
-            </div>
+            <p class="text-[10px] md:text-xs tracking-[0.5em] text-zinc-300 font-rajdhani uppercase select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">DELTS EXPERIENCE // PORTFÓLIO IMERSIVO</p>
 
             <!-- Botão MIM: entra no site -->
             <div class="flex flex-col items-center space-y-4">
-                <button id="press-start-btn" onclick="initiatePS2ConsoleBoot()" class="group px-14 py-4 bg-transparent border-2 border-cyan-400/50 hover:border-cyan-400 text-cyan-400 hover:text-white rounded-full font-rajdhani font-bold tracking-[0.45em] text-sm uppercase transition-all duration-500 hover:bg-cyan-400/5 hover:shadow-[0_0_30px_rgba(255,196,0,0.35)] select-none">
+                <button id="press-start-btn" onclick="initiatePS2ConsoleBoot()" class="group px-14 py-4 bg-black/40 backdrop-blur-sm border-2 border-cyan-400/50 hover:border-cyan-400 text-cyan-400 hover:text-white rounded-full font-rajdhani font-bold tracking-[0.45em] text-sm uppercase transition-all duration-500 hover:bg-cyan-400/10 hover:shadow-[0_0_30px_rgba(255,196,0,0.35)] select-none">
                     MIM
                 </button>
-                <p class="text-[9px] tracking-[0.35em] text-zinc-600 font-rajdhani uppercase select-none animate-pulse">Clique em MIM para entrar</p>
+                <p class="text-[9px] tracking-[0.35em] text-zinc-300 font-rajdhani uppercase select-none animate-pulse drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">Clique em MIM para entrar</p>
             </div>
         </div>
     </div>
