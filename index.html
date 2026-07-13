@@ -23,12 +23,22 @@
             background-color: var(--dark-bg);
             color: #e5e7eb;
             font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+            /* No telemóvel a página rola normalmente (painéis empilhados); só fica travada em 100vh a partir do tablet/desktop */
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: auto;
+            min-height: 100vh;
+            width: 100%;
             /* Evita flashes visuais indesejados de seleção de texto ao clicar rapidamente */
             user-select: none;
             -webkit-user-select: none;
+        }
+        @media (min-width: 768px) {
+            body {
+                overflow: hidden;
+                height: 100vh;
+                width: 100vw;
+            }
         }
 
         /* Permite seleção de texto apenas em campos de entrada */
@@ -41,15 +51,22 @@
             font-family: 'Rajdhani', sans-serif;
         }
 
-        /* Contentores inclinados diagonalmente (Referência: image_ff2b49.png) */
+        /* Contentores inclinados diagonalmente (Referência: image_ff2b49.png).
+           A inclinação só se aplica a partir do tablet/desktop (768px+); no telemóvel os painéis ficam retos e empilhados. */
         .skew-container {
-            transform: skewX(var(--skew-angle)) scaleX(1.15);
-            transform-origin: center;
             transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @media (min-width: 768px) {
+            .skew-container {
+                transform: skewX(var(--skew-angle)) scaleX(1.15);
+                transform-origin: center;
+            }
+            .unskew-content {
+                transform: skewX(var(--unskew-angle)) scaleX(1);
+            }
         }
 
         .unskew-content {
-            transform: skewX(var(--unskew-angle)) scaleX(1);
             transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -265,9 +282,58 @@
         .stripe-panel.active-stripe .panel-video-dim {
             opacity: 0.35;
         }
+
+        /* ==================== EXPERIÊNCIA MOBILE (telas abaixo de 768px) ====================
+           Os painéis diagonais viram cartões retos empilhados verticalmente, com scroll normal da página. */
+        @media (max-width: 767px) {
+            #main-accordion {
+                overflow: visible !important;
+            }
+
+            /* Cada painel vira um cartão reto de altura fixa, sem depender do flex-grow calculado por JS para desktop */
+            .stripe-panel {
+                width: 100% !important;
+                flex: none !important;
+                height: 168px !important;
+            }
+            .stripe-panel.active-stripe {
+                height: 260px !important;
+            }
+
+            /* Sem inclinação para desfazer no telemóvel: o conteúdo já ocupa o espaço reto do cartão */
+            .unskew-content {
+                position: relative !important;
+                inset: auto !important;
+                height: 100% !important;
+                width: 100% !important;
+            }
+
+            /* Sem a inclinação, o vídeo não precisa de sobra extra para cobrir cantos: volta ao tamanho normal */
+            .panel-bg-video,
+            .panel-video-dim {
+                inset: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            /* Menu lateral ocupa o ecrã inteiro em vez da máscara curva pensada para desktop */
+            #curved-menu {
+                width: 100vw !important;
+                clip-path: none !important;
+            }
+
+            /* Widgets flutuantes mais compactos para não brigar com o polegar */
+            #volume-control {
+                bottom: 5.25rem;
+                padding: 0.5rem 0.85rem;
+            }
+            #music-notification {
+                max-width: calc(100vw - 3rem);
+            }
+        }
     </style>
 </head>
-<body class="relative flex h-screen w-screen overflow-hidden">
+<body class="relative flex flex-col h-auto md:h-screen w-full md:w-screen overflow-y-auto overflow-x-hidden md:overflow-hidden">
 
     <!-- COLD BOOT: ECRÃ DE ENTRADA (DELTS SPECIAL EDITION) -->
     <!-- Estado inicial: só a foto, parada. Clicar em qualquer ponto dispara o piscar duplo e entra no site. -->
@@ -357,12 +423,12 @@
     </header>
 
     <!-- Contentor dos Painéis Diagonais de Navegação Base -->
-    <main id="main-accordion" class="flex-1 h-full relative overflow-hidden flex bg-black transition-all duration-700">
+    <main id="main-accordion" class="flex-1 h-auto md:h-full relative overflow-visible md:overflow-hidden flex bg-black transition-all duration-700">
         <!-- Grelha de design industrial em segundo plano -->
         <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f293708_1px,transparent_1px),linear-gradient(to_bottom,#1f293708_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
 
         <!-- Estrutura Principal dos Acordeões (116% de largura para compensar a inclinação de -18deg) -->
-        <div class="skew-container w-[116%] -ml-[8%] h-full flex flex-row">
+        <div class="skew-container w-full md:w-[116%] md:-ml-[8%] h-auto md:h-full flex flex-col md:flex-row">
             
             <!-- FAIXA 01: BIOGRAPHY (Otimização: onmouseenter foca, onclick entra) -->
             <section id="panel-1" onmouseenter="focusPanel(1)" onclick="enterSection(1)" class="stripe-panel flex-1 h-full border-r border-zinc-900/60 bg-[#121316] relative overflow-hidden cursor-pointer group">
