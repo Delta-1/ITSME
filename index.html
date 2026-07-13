@@ -127,75 +127,6 @@
         @keyframes eq-bar-2 { 0%, 100% { height: 40%; } 50% { height: 100%; } }
         @keyframes eq-bar-3 { 0%, 100% { height: 15%; } 50% { height: 80%; } }
 
-        /* Brilho sobre o letreiro real na foto de fundo.
-           Estado ocioso: flicker sutil em amarelo, como um letreiro de neon de verdade.
-           No clique: pisca 2x amarelo -> vermelho antes de entrar no site. */
-        @keyframes itsme-idle-flicker {
-            0%, 100% { opacity: 0.85; background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
-            5%       { opacity: 0.45; }
-            10%      { opacity: 0.9; }
-            16%      { opacity: 0.6; }
-            22%, 68% { opacity: 0.85; }
-            71%      { opacity: 0.35; }
-            74%      { opacity: 0.85; }
-            85%      { opacity: 0.55; }
-            89%      { opacity: 0.9; }
-        }
-        @keyframes sign-glow-pulse {
-            0%   { background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
-            50%  { background: radial-gradient(circle, rgba(255,43,43,0.65) 0%, rgba(255,43,43,0) 72%); }
-            100% { background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%); }
-        }
-        .itsme-sign-glow {
-            position: absolute;
-            top: 15%;
-            width: 36%;
-            height: 60%;
-            mix-blend-mode: screen;
-            pointer-events: none;
-            filter: blur(4px);
-            background: radial-gradient(circle, rgba(255,196,0,0.65) 0%, rgba(255,196,0,0) 72%);
-            animation: itsme-idle-flicker 4.5s infinite ease-in-out;
-        }
-        .itsme-sign-glow-left { left: 0%; }
-        .itsme-sign-glow-right { right: 0%; animation-delay: 1.4s; }
-        /* Ativado só no clique: pisca 2x (amarelo -> vermelho) antes de entrar no site */
-        #ps2-boot-screen.boot-blink-active .itsme-sign-glow {
-            opacity: 1;
-            animation: sign-glow-pulse 0.6s ease-in-out 2;
-        }
-
-        /* Faíscas do letreiro: pipocam junto com o flicker da luz (estado ocioso) */
-        @keyframes spark-pop {
-            0%, 96%, 100% { opacity: 0; transform: translate(0, 0) scale(0.4); }
-            50% { opacity: 1; transform: translate(var(--spark-dx, 6px), var(--spark-dy, 8px)) scale(1); }
-            60% { opacity: 0; transform: translate(var(--spark-dx, 6px), calc(var(--spark-dy, 8px) + 6px)) scale(0.5); }
-        }
-        .itsme-spark {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            background: #fff6da;
-            box-shadow: 0 0 6px 2px rgba(255, 196, 0, 0.95), 0 0 14px 4px rgba(255, 120, 0, 0.55);
-            opacity: 0;
-            pointer-events: none;
-            animation: spark-pop 4.5s infinite ease-out;
-        }
-        /* No clique, as faíscas ficam rápidas e intensas junto com o piscar amarelo/vermelho */
-        #ps2-boot-screen.boot-blink-active .itsme-spark {
-            animation: spark-pop 0.6s infinite ease-out;
-        }
-
-        /* A tela toda pisca invertendo a cor, em sincronia com o piscar do letreiro */
-        @keyframes screen-invert-flash {
-            0%, 35%, 100% { filter: invert(0); }
-            50%, 85% { filter: invert(1); }
-        }
-        #ps2-boot-screen.boot-blink-active {
-            animation: screen-invert-flash 0.6s ease-in-out 2;
-        }
-
         /* Vídeos de fundo dos painéis do acordeão: parados e escurecidos até o painel ficar em foco.
            Ficam FORA da camada contra-inclinada, herdando a mesma inclinação do painel — cobre 100% do
            espaço sem sobras nem vazios (por construção, não por cálculo de margem). */
@@ -270,25 +201,12 @@
 <body class="relative flex flex-col h-auto md:h-screen w-full md:w-screen overflow-y-auto overflow-x-hidden md:overflow-hidden">
 
     <!-- COLD BOOT: ECRÃ DE ENTRADA (DELTS SPECIAL EDITION) -->
-    <!-- Estado inicial: só a foto, parada. Clicar em qualquer ponto dispara o piscar duplo e entra no site. -->
+    <!-- Estado inicial: só a foto, parada. Clicar em qualquer ponto entra no site. -->
     <div id="ps2-boot-screen" onclick="initiatePS2ConsoleBoot()" class="fixed inset-0 z-[200] bg-black overflow-hidden cursor-pointer transition-opacity duration-700">
         <!-- Foto de fundo: eu em frente ao letreiro neon ITSME -->
         <div class="absolute inset-0 z-0">
             <img src="itsme.jpeg" alt="Itsme" class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none" draggable="false">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/35 pointer-events-none"></div>
-            <!-- Brilho amarelo -> vermelho sobre a área do letreiro: só anima após o clique -->
-            <div class="itsme-sign-glow itsme-sign-glow-left"></div>
-            <div class="itsme-sign-glow itsme-sign-glow-right"></div>
-
-            <!-- Faíscas do letreiro de néon: pipocam junto com o flicker da luz -->
-            <div class="itsme-spark" style="top:24%; left:8%;  --spark-dx:5px;  --spark-dy:9px;  animation-delay:0.1s;"></div>
-            <div class="itsme-spark" style="top:52%; left:14%; --spark-dx:-6px; --spark-dy:7px;  animation-delay:0.65s;"></div>
-            <div class="itsme-spark" style="top:38%; left:24%; --spark-dx:7px;  --spark-dy:-6px; animation-delay:3.15s;"></div>
-            <div class="itsme-spark" style="top:60%; left:5%;  --spark-dx:4px;  --spark-dy:8px;  animation-delay:3.75s;"></div>
-            <div class="itsme-spark" style="top:28%; right:9%;  --spark-dx:-5px; --spark-dy:8px;  animation-delay:0.35s;"></div>
-            <div class="itsme-spark" style="top:55%; right:16%; --spark-dx:6px;  --spark-dy:-7px; animation-delay:0.9s;"></div>
-            <div class="itsme-spark" style="top:44%; right:26%; --spark-dx:-7px; --spark-dy:6px;  animation-delay:3.4s;"></div>
-            <div class="itsme-spark" style="top:63%; right:7%;  --spark-dx:5px;  --spark-dy:-8px; animation-delay:4.05s;"></div>
         </div>
 
         <div class="absolute bottom-10 inset-x-0 flex justify-center z-10 pointer-events-none">
@@ -882,37 +800,6 @@
             return globalNoiseBuffer;
         }
 
-        // 1. Som de Cursor do PS2 (O "tack" tátil e ressonante do menu clássico)
-        function playPS2HoverSound() {
-            try {
-                const ctx = getAudioContext();
-                if (ctx.state === 'suspended') {
-                    ctx.resume();
-                }
-                const now = ctx.currentTime;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                const lp = ctx.createBiquadFilter();
-
-                osc.type = "sine";
-                osc.frequency.setValueAtTime(340, now);
-                osc.frequency.exponentialRampToValueAtTime(70, now + 0.04);
-
-                lp.type = "lowpass";
-                lp.frequency.setValueAtTime(450, now);
-
-                gain.gain.setValueAtTime(0.18, now);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
-
-                osc.connect(lp);
-                lp.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.042);
-            } catch (e) {}
-        }
-
         // 2. Som de Seleção/Enter: Som clássico de confirmação de leitura com "thock" mecânico
         function playPS2SelectSound() {
             try {
@@ -977,49 +864,6 @@
                 osc.start(now);
                 osc.stop(now + 0.25);
             } catch(e){}
-        }
-
-        // --- SOM DE FAÍSCA DE LETREIRO DE NÉON (transição de entrada) ---
-        function playSignSparkSound() {
-            try {
-                const ctx = getAudioContext();
-                if (ctx.state === 'suspended') {
-                    ctx.resume();
-                }
-                const now = ctx.currentTime;
-
-                // Zumbido elétrico do transformador do letreiro
-                const buzzOsc = ctx.createOscillator();
-                const buzzGain = ctx.createGain();
-                buzzOsc.type = "sawtooth";
-                buzzOsc.frequency.setValueAtTime(90, now);
-                buzzGain.gain.setValueAtTime(0.05, now);
-                buzzGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.15);
-                buzzOsc.connect(buzzGain);
-                buzzGain.connect(ctx.destination);
-                buzzOsc.start(now);
-                buzzOsc.stop(now + 1.2);
-
-                // Faíscas: estalos curtos de ruído filtrado em momentos aleatórios
-                const sparkTimes = [0, 0.12, 0.22, 0.35, 0.5, 0.6, 0.78, 0.98];
-                sparkTimes.forEach((offset) => {
-                    const t = now + offset;
-                    const noise = ctx.createBufferSource();
-                    noise.buffer = getNoiseBuffer();
-                    const bp = ctx.createBiquadFilter();
-                    bp.type = "bandpass";
-                    bp.frequency.setValueAtTime(2500 + Math.random() * 3000, t);
-                    bp.Q.setValueAtTime(6, t);
-                    const g = ctx.createGain();
-                    g.gain.setValueAtTime(0.12 + Math.random() * 0.08, t);
-                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03 + Math.random() * 0.02);
-                    noise.connect(bp);
-                    bp.connect(g);
-                    g.connect(ctx.destination);
-                    noise.start(t);
-                    noise.stop(t + 0.06);
-                });
-            } catch (error) {}
         }
 
         // 4. Som de Transição "Câmara Flash" Futurista (Sem Assobio prévio)
@@ -1113,21 +957,16 @@
 
             const bootScreen = document.getElementById('ps2-boot-screen');
             bootScreen.style.cursor = "default";
-            bootScreen.classList.add('boot-blink-active'); // dispara o piscar amarelo -> vermelho 2x, as faíscas e a inversão de cor da tela
-            playSignSparkSound();
 
-            // Aguarda os 2 ciclos do piscar (0.6s x 2) antes de revelar o portfólio
+            triggerDoubleInvertedFlash();
+            bootScreen.style.opacity = "0";
+            bootScreen.style.pointerEvents = "none";
+
             setTimeout(() => {
-                triggerDoubleInvertedFlash();
-                bootScreen.style.opacity = "0";
-                bootScreen.style.pointerEvents = "none";
+                bootScreen.style.display = "none";
+            }, 700);
 
-                setTimeout(() => {
-                    bootScreen.style.display = "none";
-                }, 700);
-
-                focusPanel(3);
-            }, 1200);
+            focusPanel(3);
         }
 
         // --- DISPARADOR DO FLASH RETRO-INVERSOR DUPLO ---
@@ -1248,10 +1087,8 @@
         // --- SELEÇÃO DE PAINEL (ACORDEÃO DINÂMICO - TRIGGER NO HOVER) ---
         function focusPanel(id) {
             if (isFullScreen) return;
-            
+
             focusedId = id;
-            // Som do cursor tátil do PS2 Browser ao navegar pelas abas
-            playPS2HoverSound();
 
             const panels = document.querySelectorAll('.stripe-panel');
             panels.forEach((p, index) => {
@@ -1582,16 +1419,6 @@
         window.onload = () => {
             resizeCanvas();
             renderDriveGallery();
-
-            // Evento sonoro sutil de cursor do console ao passar o mouse em painéis diagonais e cassetes
-            // Nota: Os painéis diagonais agora chamam focusPanel(id) nativamente no "onmouseenter", que por sua vez chama playPS2HoverSound().
-            // O seletor abaixo exclui as abas principais para evitar a execução duplicada de sons.
-            const interactives = document.querySelectorAll('.tilted-news-card, button, a');
-            interactives.forEach(elem => {
-                elem.addEventListener('mouseenter', () => {
-                    playPS2HoverSound();
-                });
-            });
         };
     </script>
 </body>
